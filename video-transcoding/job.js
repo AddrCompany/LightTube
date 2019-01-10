@@ -1,4 +1,4 @@
-const { createTranscodingJob } = require('./createTranscodingJob');
+const { createTranscodingJob } = require('./transcoding-job/createTranscodingJob');
 
 // Job
 // poll S3 to see if anything exists
