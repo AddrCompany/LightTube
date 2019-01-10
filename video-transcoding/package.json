@@ -4,6 +4,7 @@
   "description": "Service for transcoding videos",
   "main": "service.js",
   "scripts": {
+    "create": "node service.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Uneeb Agha",
