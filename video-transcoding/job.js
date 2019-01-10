@@ -1,11 +1,5 @@
-const { createTranscodingJob } = require('./transcoding-job/createTranscodingJob');
+const poller = require('./transcoding-job/poller');
 
-// Job
-// poll S3 to see if anything exists
-// yes: run transcoding job && delete videos from S3
-// no: do nothing
-
-
-createTranscodingJob()
+poller()
 .then(job => console.log(job))
 .catch(err => console.error(err));
