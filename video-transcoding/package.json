@@ -2,9 +2,10 @@
   "name": "video-transcoding",
   "version": "1.0.0",
   "description": "Service for transcoding videos",
-  "main": "service.js",
+  "main": "job.js",
   "scripts": {
-    "transcode": "node service.js",
+    "transcode": "node job.js",
+    "upload": "node upload.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Uneeb Agha",
