@@ -1,7 +1,3 @@
-### Upload
-
-Upload operation: `npm run upload`
-
 ### Transcode
 
 CloudFormation template `video-on-demand-on-aws.template` to spin up resources
