@@ -31,7 +31,7 @@ class App extends Component {
                       history.push(to);
                     }
                   }}
-                  style={{background: '#919191', borderRight: '1px solid'}}
+                  style={{backgroundColor: '#222', borderRight: '1px solid'}}
               >
                   <SideNav.Toggle />
                   <SideNav.Nav defaultSelected="home">
@@ -53,6 +53,7 @@ class App extends Component {
                       </NavItem>
                   </SideNav.Nav>
               </SideNav>
+              <TopNav />
               <main>
                   <Route path="/" exact component={props => <Home />} />
                   <Route path="/upload" component={props => <Upload />} />
@@ -61,6 +62,20 @@ class App extends Component {
       )}
       />
     </div>
+    );
+  }
+}
+
+class TopNav extends Component {
+  render() {
+    return (
+      <div style={{height: '8vh', backgroundColor: '#333', position: 'fixed', width: '100%',}}>
+        <div style={{paddingLeft: '20vw', float: 'left', fontSize: '1.75em', fontFamily: 'Noto Serif', marginTop: '10px', color: '#FFF'}}>
+          Light<span role="img" aria-label="Thunder">⚡</span>Tube
+        </div>
+
+      </div>
+
     );
   }
 }
