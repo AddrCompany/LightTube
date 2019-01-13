@@ -1,0 +1,23 @@
+.Videos-full {
+    padding-top: 5%;
+    margin-left: 5%;
+    margin-right: 10%;
+}
+
+.Videos-header {
+    margin: 2%;
+    text-align: left;
+    font-size: calc(10px + 2vmin);
+    color: white;
+}
+
+.Videos-all {
+    margin: 1%;
+    background: 'black';
+}
+
+.Video-container {
+    border: 1px dotted white;
+    margin: 1%;
+    height: 200px;
+}

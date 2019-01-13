@@ -10,6 +10,16 @@ class App extends Component {
   state = {
     atHome: true,
     atUpload: false,
+    marginLeft: '64px',
+  }
+
+  moveMain = (expanded) => {
+    if (expanded) {
+      this.setState({marginLeft: '240px'});
+    }
+    else {
+      this.setState({marginLeft: '64px'});
+    }
   }
 
   render() {
@@ -18,6 +28,7 @@ class App extends Component {
         <Route render={({ location, history }) => (
           <React.Fragment>
               <SideNav
+                  onToggle={this.moveMain}
                   onSelect={(selected) => {
                     let to = '/'
                     if (selected === "") {
@@ -31,7 +42,7 @@ class App extends Component {
                       history.push(to);
                     }
                   }}
-                  style={{backgroundColor: '#222', borderRight: '1px solid'}}
+                  style={{backgroundColor: '#222', borderRight: '1px solid', position: 'fixed'}}
               >
                   <SideNav.Toggle />
                   <SideNav.Nav defaultSelected="home">
@@ -53,10 +64,12 @@ class App extends Component {
                       </NavItem>
                   </SideNav.Nav>
               </SideNav>
-              <TopNav />
-              <main>
-                  <Route path="/" exact component={props => <Home />} />
-                  <Route path="/upload" component={props => <Upload />} />
+              <main className="Main" style={{marginLeft: this.state.marginLeft}}>
+                <TopNav />
+                <div className="Container-videos">
+                    <Route path="/" exact component={props => <Home />} />
+                    <Route path="/upload" component={props => <Upload />} />
+                </div>
               </main>
           </React.Fragment>
       )}
@@ -69,8 +82,8 @@ class App extends Component {
 class TopNav extends Component {
   render() {
     return (
-      <div style={{height: '8vh', backgroundColor: '#333', position: 'fixed', width: '100%',}}>
-        <div style={{paddingLeft: '20vw', float: 'left', fontSize: '1.75em', fontFamily: 'Noto Serif', marginTop: '10px', color: '#FFF'}}>
+      <div style={{height: '8vh', backgroundColor: '#333', position: 'fixed', width: '100%', display: 'block'}}>
+        <div className="Brand">
           Light<span role="img" aria-label="Thunder">⚡</span>Tube
         </div>
 

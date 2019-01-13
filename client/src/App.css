@@ -1,5 +1,11 @@
 .App {
   text-align: center;
+  width: 100vw;
+  height: 100vh;
+}
+
+body {
+  background-color: #282c34;
 }
 
 .App-logo {
@@ -8,7 +14,6 @@
 }
 
 .App-header {
-  background-color: #282c34;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -18,15 +23,26 @@
   color: white;
 }
 
+.Container-videos {
+  width: 100%;
+}
+
+.Brand {
+  height: 100%;
+  padding-left: 5%;
+  float: left;
+  font-size: 1.75em;
+  font-family: 'Noto Serif';
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFF;
+}
+
 .App-link {
   color: #61dafb;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.Main {
+  width: 100%;
 }
