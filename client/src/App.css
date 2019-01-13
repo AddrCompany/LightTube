@@ -29,7 +29,7 @@ body {
 
 .Brand {
   height: 100%;
-  padding-left: 5%;
+  margin-left: 5%;
   float: left;
   font-size: 1.75em;
   font-family: 'Noto Serif';
@@ -41,8 +41,4 @@ body {
 
 .App-link {
   color: #61dafb;
-}
-
-.Main {
-  width: 100%;
 }

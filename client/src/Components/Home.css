@@ -2,6 +2,8 @@
     padding-top: 5%;
     margin-left: 5%;
     margin-right: 10%;
+    overflow: hidden;
+    z-index: -1;
 }
 
 .Videos-header {
@@ -13,7 +15,6 @@
 
 .Videos-all {
     margin: 1%;
-    background: 'black';
 }
 
 .Video-container {

@@ -42,7 +42,7 @@ class App extends Component {
                       history.push(to);
                     }
                   }}
-                  style={{backgroundColor: '#222', borderRight: '1px solid', position: 'fixed'}}
+                  style={{backgroundColor: '#222', borderRight: '1px solid', position: 'fixed', zIndex: 2}}
               >
                   <SideNav.Toggle />
                   <SideNav.Nav defaultSelected="home">
@@ -64,7 +64,7 @@ class App extends Component {
                       </NavItem>
                   </SideNav.Nav>
               </SideNav>
-              <main className="Main" style={{marginLeft: this.state.marginLeft}}>
+              <main style={{marginLeft: this.state.marginLeft}}>
                 <TopNav />
                 <div className="Container-videos">
                     <Route path="/" exact component={props => <Home />} />
@@ -82,11 +82,10 @@ class App extends Component {
 class TopNav extends Component {
   render() {
     return (
-      <div style={{height: '8vh', backgroundColor: '#333', position: 'fixed', width: '100%', display: 'block'}}>
+      <div style={{height: '8vh', backgroundColor: '#333', position: 'fixed', width: '100%', display: 'block', zIndex: 1}}>
         <div className="Brand">
           Light<span role="img" aria-label="Thunder">⚡</span>Tube
         </div>
-
       </div>
 
     );
