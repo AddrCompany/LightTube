@@ -1,0 +1,15 @@
+.Upload-full {
+  padding-top: 5%;
+  margin-left: 5%;
+  margin-right: 10%;
+  overflow: hidden;
+  z-index: -1;
+  color: white;
+}
+
+.Upload-header {
+  margin: 2%;
+  text-align: left;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}

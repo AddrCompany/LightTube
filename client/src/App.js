@@ -7,10 +7,40 @@ import Upload from './Components/Upload';
 import './App.css';
 
 class App extends Component {
-  state = {
-    atHome: true,
-    atUpload: false,
-    marginLeft: '64px',
+  render() {
+    return (
+      <div className="App">
+        <Route component={CustomSideNav} />
+    </div>
+    );
+  }
+}
+
+class CustomSideNav extends Component {
+  constructor(props) {
+    super(props);
+    let currentPath = this.props.location.pathname.substring(1);
+    if (currentPath === "") {
+      currentPath = "home";
+    }
+    this.state = {
+      currentPath: currentPath,
+      marginLeft: '64px',
+    };
+  }
+
+  atHome = () => {
+    if (this.state.currentPath === "home") {
+      return true;
+    }
+    return false;
+  }
+
+  atUpload = () => {
+    if (this.state.currentPath === "upload") {
+      return true;
+    }
+    return false;
   }
 
   moveMain = (expanded) => {
@@ -22,59 +52,51 @@ class App extends Component {
     }
   }
 
+  toggleSelect = (selected) => {
+    let to = '/' + selected;
+    this.setState({currentPath: selected});
+    if (this.props.location.pathname !== to) {
+      this.props.history.push(to);
+    }
+  }
+
   render() {
     return (
-      <div className="App">
-        <Route render={({ location, history }) => (
-          <React.Fragment>
-              <SideNav
-                  onToggle={this.moveMain}
-                  onSelect={(selected) => {
-                    let to = '/'
-                    if (selected === "") {
-                      this.setState({atHome: true, atUpload: false});
-                    }
-                    else if (selected === "upload") {
-                      to = '/' + selected;
-                      this.setState({atHome: false, atUpload: true});
-                    }
-                    if (location.pathname !== to) {
-                      history.push(to);
-                    }
-                  }}
-                  style={{backgroundColor: '#222', borderRight: '1px solid', position: 'fixed', zIndex: 2}}
-              >
-                  <SideNav.Toggle />
-                  <SideNav.Nav defaultSelected="home">
-                      <NavItem eventKey="" active={this.state.atHome}>
-                          <NavIcon>
-                              <i className="fa fa-fw fa-home" style={{ fontSize: '1.75em' }} />
-                          </NavIcon>
-                          <NavText>
-                              Home
-                          </NavText>
-                      </NavItem>
-                      <NavItem eventKey="upload" active={this.state.atUpload}>
-                          <NavIcon>
-                            <i className="fa fa-fw fa-upload" style={{ fontSize: '1.75em' }} />
-                          </NavIcon>
-                          <NavText>
-                              Upload
-                          </NavText>
-                      </NavItem>
-                  </SideNav.Nav>
-              </SideNav>
-              <main style={{marginLeft: this.state.marginLeft}}>
-                <TopNav />
-                <div className="Container-videos">
-                    <Route path="/" exact component={props => <Home />} />
-                    <Route path="/upload" component={props => <Upload />} />
-                </div>
-              </main>
-          </React.Fragment>
-      )}
-      />
-    </div>
+      <React.Fragment>
+        <SideNav
+            onToggle={this.moveMain}
+            onSelect={this.toggleSelect}
+            style={{backgroundColor: '#222', borderRight: '1px solid', position: 'fixed', zIndex: 2}}
+        >
+            <SideNav.Toggle />
+            <SideNav.Nav defaultSelected={this.state.currentPath}>
+                <NavItem eventKey="home" active={this.atHome()}>
+                    <NavIcon>
+                        <i className="fa fa-fw fa-home" style={{ fontSize: '1.75em' }} />
+                    </NavIcon>
+                    <NavText>
+                        Home
+                    </NavText>
+                </NavItem>
+                <NavItem eventKey="upload" active={this.atUpload()}>
+                    <NavIcon>
+                      <i className="fa fa-fw fa-upload" style={{ fontSize: '1.75em' }} />
+                    </NavIcon>
+                    <NavText>
+                        Upload
+                    </NavText>
+                </NavItem>
+            </SideNav.Nav>
+        </SideNav>
+        <main style={{marginLeft: this.state.marginLeft}}>
+          <TopNav />
+          <div className="Container-videos">
+              <Route path="/" exact component={props => <Home />} />
+              <Route path="/home" component={props => <Home />} />
+              <Route path="/upload" component={props => <Upload />} />
+          </div>
+        </main>
+      </React.Fragment>
     );
   }
 }
