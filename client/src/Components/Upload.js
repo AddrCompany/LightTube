@@ -8,7 +8,7 @@ export default class Upload extends Component {
     title: "",
     description: "",
     user: "",
-    file: "",
+    file: null,
     isAnon: false
   };
 
@@ -37,8 +37,8 @@ export default class Upload extends Component {
     let value = event.target.value;
     let fileName = value.split('\\').pop();
     this.setState({
-      file: value,
-      fileLabel: fileName
+      fileLabel: fileName,
+      file: this.uploadInput.files[0]
     });
   }
 
@@ -51,7 +51,7 @@ export default class Upload extends Component {
       alert("'Submitted by' is a required field");
       return false;
     }
-    if (this.state.file === "") {
+    if (this.state.file === null) {
       alert("'File' is a required field");
       return false;
     }
@@ -62,6 +62,7 @@ export default class Upload extends Component {
     event.preventDefault();
     let valid = this.validateFields();
     if (valid) {
+      console.log(this.state)
       // do something
     }
   }
@@ -109,7 +110,9 @@ export default class Upload extends Component {
             <label className="col-sm-2 col-form-label text-right" htmlFor="inputUpload">Upload</label>
             <div className="col-sm-8">
               <div  className="custom-file">
-                <input type="file" value={this.state.file} className="custom-file-input" id="customFile" onChange={this.onChangeFile} />
+                <input type="file" ref={ref => (this.uploadInput = ref)} className="custom-file-input" id="customFile" onChange={this.onChangeFile}
+                  accept=".mp4,.mpg,.m4v,.m2ts,.mov" />
+                <small id="uploadHelp" className="form-text text-muted text-left">We currently only accept the following file extensions: .mp4, .mpg, .m4v, .m2ts or .mov</small>
                 <label className="custom-file-label" htmlFor="customFile">{this.state.fileLabel}</label>
               </div>
             </div>
