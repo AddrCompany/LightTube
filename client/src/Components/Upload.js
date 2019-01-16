@@ -80,8 +80,12 @@ export default class Upload extends Component {
         },
       })
       .then(response => {
-        this.props.history.push("/");
-        console.log("DONE", response);
+        if (response.status == 200) {
+          this.props.history.push("/");
+          alert("Successfully uploaded. Your video will shortly appear on the website");
+        } else {
+          alert("Upload unsuccessful. If the problem persists, email me at uneeb.agha@gmail.com. Thanks!");
+        }
       });
     }
   }
