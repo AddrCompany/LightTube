@@ -4,7 +4,7 @@ import * as uuidv4 from 'uuid/v4';
 
 import { Models } from "./model";
 
-const SUPPORTED_EXTENSION = ["mp4", "mpg", "m4v", "m2ts", "mov"];
+const SUPPORTED_EXTENSIONS = ["mp4", "mpg", "m4v", "m2ts", "mov"];
 
 export interface ServerRequest extends express.Request {
     models?: Models,
@@ -14,17 +14,18 @@ export interface ServerResponse extends express.Response {}
 
 const router = express.Router();
 
-router.post('/', function(req: ServerRequest, res: ServerResponse) {
-});
-
 router.get('/', function(req: ServerRequest, res: ServerResponse) {
     res.send("WeWorks");
+});
+
+router.get('/all', function(req: ServerRequest, res: ServerResponse) {
+    // database call and return
 });
 
 router.post('/upload', function(req: ServerRequest, res: ServerResponse) {
     const videoFile: UploadedFile = req.files.file as UploadedFile;
     const videoFileExtension = videoFile.name.split('.').pop();
-    if (SUPPORTED_EXTENSION.indexOf(videoFileExtension) == -1) {
+    if (SUPPORTED_EXTENSIONS.indexOf(videoFileExtension) === -1) {
         res.status(500).send({error: "Unsupported extension"});
     }
     const videoFileName: string = uuidv4();

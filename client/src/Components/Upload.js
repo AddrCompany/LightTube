@@ -80,7 +80,7 @@ export default class Upload extends Component {
         },
       })
       .then(response => {
-        if (response.status == 200) {
+        if (response.status === 200) {
           this.props.history.push("/");
           alert("Successfully uploaded. Your video will shortly appear on the website");
         } else {
