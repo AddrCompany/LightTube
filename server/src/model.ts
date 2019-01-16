@@ -50,7 +50,7 @@ export interface Models extends sequelize.Models {
 
 export function instantiateModels(sequelizeInstance: sequelize.Sequelize): Models {
     const videos = sequelizeInstance.define<Video, VideoAttrs>('videos', videoDataTypes);
-    const comments = sequelizeInstance.define<Comment, CommentAttrs>('videos', commentDataTypes);
+    const comments = sequelizeInstance.define<Comment, CommentAttrs>('comments', commentDataTypes);
     // videos.hasMany(comments, { foreignKey: 'video_id' })
     comments.belongsTo(videos, { foreignKey: 'video_id', as: 'video'} );
     return {
