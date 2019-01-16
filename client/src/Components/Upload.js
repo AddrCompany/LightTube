@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import axios from 'axios';
 
 import './Upload.css';
 
@@ -9,7 +10,9 @@ export default class Upload extends Component {
     description: "",
     user: "",
     file: null,
-    isAnon: false
+    isAnon: false,
+    loaded: 0,
+    loading: false
   };
 
   onChangeTitle = (event) => {
@@ -61,9 +64,25 @@ export default class Upload extends Component {
   handleSubmit = (event) => {
     event.preventDefault();
     let valid = this.validateFields();
+    const endpoint = "http://localhost:8001/upload";
     if (valid) {
-      console.log(this.state)
-      // do something
+      const data = new FormData();
+      data.append('file', this.state.file);
+      data.append('title', this.state.title);
+      data.append('description', this.state.description);
+      data.append('user', this.state.user);
+      axios.post(endpoint, data, {
+        onUploadProgress: ProgressEvent => {
+          this.setState({
+            loading: true,
+            loaded: parseInt(ProgressEvent.loaded / ProgressEvent.total*100),
+          });
+        },
+      })
+      .then(response => {
+        this.props.history.push("/");
+        console.log("DONE", response);
+      });
     }
   }
 
@@ -78,6 +97,11 @@ export default class Upload extends Component {
   }
 
   render() {
+    let loader = (
+      <div className="container mt-4" >
+          {this.state.loaded}% loaded
+      </div>
+    );
     return (
       <div className="Upload-full">
         <header className="Upload-header">
@@ -119,6 +143,7 @@ export default class Upload extends Component {
           </div>
           <button type="submit" className="btn btn-primary">Submit</button>
         </form>
+        {this.state.loading ? loader : null}
       </div>
     );
   }

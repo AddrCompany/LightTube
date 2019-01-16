@@ -91,9 +91,9 @@ class CustomSideNav extends Component {
         <main style={{marginLeft: this.state.marginLeft}}>
           <TopNav />
           <div className="Container-videos">
-              <Route path="/" exact component={props => <Home />} />
-              <Route path="/home" component={props => <Home />} />
-              <Route path="/upload" component={props => <Upload />} />
+              <Route path="/" exact component={props => <Home {...this.props} />} />
+              <Route path="/home" component={props => <Home {...this.props} />} />
+              <Route path="/upload" component={props => <Upload {...this.props} />} />
           </div>
         </main>
       </React.Fragment>
