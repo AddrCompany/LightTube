@@ -147,7 +147,7 @@ function handleMessage(msg: AWS.SQS.Message): Promise<boolean> {
       const complete = body as CompleteMessage;
       const guid = complete.guid;
       const cloudFront = complete.cloudFront;
-      const thumbNailUrl = complete.thumbNailUrl;
+      const thumbNailUrl = complete.thumbNailUrl[0];
       return completeUpdate(guid, cloudFront, thumbNailUrl, models);
   }
   else {
