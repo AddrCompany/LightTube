@@ -37,8 +37,9 @@ router.post('/upload', function(req: UploadRequest, res: ServerResponse) {
         res.status(500).send({error: "Unsupported extension"});
     }
     const videoFileName: string = uuidv4();
+    const fullVideoFileName: string = videoFileName + '.' + videoFileExtension;
     videoFile.mv(
-        `${process.cwd()}/uploads/${videoFileName}.${videoFileExtension}`,
+        `${process.cwd()}/uploads/${fullVideoFileName}`,
         function (err) {
             if (err) {
                 return res.status(500).send(err)
@@ -48,7 +49,7 @@ router.post('/upload', function(req: UploadRequest, res: ServerResponse) {
                 description: req.body.description,
                 user: req.body.user
             };
-            persistNewVideo(videoParams, req.models, videoFileName)
+            persistNewVideo(videoParams, req.models, fullVideoFileName)
             .then(video =>
                 res.json({
                     title: video.get().title,

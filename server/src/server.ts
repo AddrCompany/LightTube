@@ -8,7 +8,6 @@ import * as fileUpload from 'express-fileupload';
 
 import { instantiateModels } from './model';
 import { ServerRequest, ServerResponse, mainRouter } from './main-router';
-import { subscriberRouter } from './subscriber-router';
 
 const PORT = 8001;
 class ServerError extends Error {
@@ -39,7 +38,6 @@ sequelizeInstance.sync({
         next();
     });
     
-    app.use("/subscribe", subscriberRouter);
     app.use("/", mainRouter);
 
     app.use(function(req, res, next) {

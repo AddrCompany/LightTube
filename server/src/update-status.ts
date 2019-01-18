@@ -60,19 +60,38 @@ function toTranscoderItem(obj: DynamoItem): TranscoderItem {
   };
 }
 
-export function completeUpdate(metadata: VideoMetadata): Promise<VideoMetadata> {
-  return getItemByGuid(metadata.get().transcoder_guid)
+export function completeUpdate(
+  guid: string, models: Models
+): Promise<VideoMetadata> {
+  return getItemByGuid(guid)
   .then(toTranscoderItem)
-  .then(item => {
-    if (item.workflowStatus === "Complete") {
-      return metadata.set("cloudfront_dash_url", item.cloudFront).save();
-    }
-    return null;
-  })
+  .then(item =>
+    models.videosMetadata.findOne({
+        where: {
+          transcoder_guid: guid
+        }
+      })
+      .then(metadata => {
+        if (metadata) {
+          return metadata.set("cloudfront_dash_url", item.cloudFront).save()
+        }
+        return null;
+      })
+  );
 }
 
 export function ingestUpdate(
-  metadata: VideoMetadata, guid: string
+  filename: string, guid: string, models: Models
 ): Promise<VideoMetadata> {
-  return metadata.set("transcoder_guid", guid).save();
+  return models.videosMetadata.findOne({
+    where: {
+      local_file_name: filename
+    }
+  })
+  .then(metadata => {
+    if (metadata) {
+      return metadata.set("transcoder_guid", guid).save()
+    }
+    return null;
+  });
 }

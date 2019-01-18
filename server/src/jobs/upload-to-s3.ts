@@ -17,7 +17,7 @@ AWS.config.update({region: 'us-east-1'});
 const SUPPORTED_EXTENSIONS = ["mp4", "mpg", "m4v", "m2ts", "mov"];
 
 const UPLOAD_PATH: string = process.cwd() + "/uploads";
-const SOURCE_BUCKET_NAME = "";
+const SOURCE_BUCKET_NAME = "lighttube-defaultsolution-source-j4lsscf2xt0r";
 
 function getAllFileNames(): Promise<string[]> {
   return new Promise((resolve, reject) => {
@@ -85,8 +85,12 @@ export function uploadAllFilesAndCleanUp(): Promise<void[]> {
           local_file_name: fileName
         }
       })
-      .then(VideoMetadata => VideoMetadata.set("source_bucket_url", sent.Location).save())
+      .then(VideoMetadata => console.log(sent, VideoMetadata))
     )
     .then(() => deleteFile(fileName))
   );
 }
+
+console.log("Initiating upload...")
+uploadAllFilesAndCleanUp()
+.then(() => console.log("Upload complete"));

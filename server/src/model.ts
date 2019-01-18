@@ -24,8 +24,7 @@ const videoMetadataDataTypes = {
     local_file_name: { type: sequelize.STRING, allowNull: false },
     transcoder_guid: { type: sequelize.UUID }, // also means S3 upload done/local file cleaned up
     img_url: { type: sequelize.STRING },
-    cloudfront_dash_url: { type: sequelize.STRING },
-    source_bucket_url: { type: sequelize.STRING }
+    cloudfront_dash_url: { type: sequelize.STRING }
 }
 
 export interface VideoAttrs {
@@ -54,7 +53,6 @@ export interface VideoMetadataAttrs {
     local_file_name: string,
     transcoder_guid?: string,
     img_url?: string,
-    source_bucket_url?: string,
     cloudfront_dash_url?: string,
     video?: VideoAttrs
 }
@@ -76,7 +74,7 @@ export function instantiateModels(sequelizeInstance: sequelize.Sequelize): Model
     const videos = sequelizeInstance.define<Video, VideoAttrs>('videos', videoDataTypes);
     const comments = sequelizeInstance.define<Comment, CommentAttrs>('comments', commentDataTypes);
     const videosMetadata = sequelizeInstance.define<VideoMetadata, VideoMetadataAttrs>('metadata', videoMetadataDataTypes);
-    videosMetadata.hasOne(videos, { foreignKey: 'video_id', as: 'video' });
+    videos.hasOne(videosMetadata, { foreignKey: 'video_id', as: 'video' });
     videos.hasMany(comments, { foreignKey: 'video_id', as: 'comments' });
     comments.belongsTo(videos, { foreignKey: 'video_id', as: 'video'} );
     return {
