@@ -92,5 +92,9 @@ export function uploadAllFilesAndCleanUp(): Promise<void[]> {
 }
 
 console.log("Initiating upload...")
-uploadAllFilesAndCleanUp()
+sequelizeInstance.sync({
+  force: false,
+  logging: console.log
+})
+.then(() => uploadAllFilesAndCleanUp())
 .then(() => console.log("Upload complete"));

@@ -74,7 +74,7 @@ export function instantiateModels(sequelizeInstance: sequelize.Sequelize): Model
     const videos = sequelizeInstance.define<Video, VideoAttrs>('videos', videoDataTypes);
     const comments = sequelizeInstance.define<Comment, CommentAttrs>('comments', commentDataTypes);
     const videosMetadata = sequelizeInstance.define<VideoMetadata, VideoMetadataAttrs>('metadata', videoMetadataDataTypes);
-    videos.hasOne(videosMetadata, { foreignKey: 'video_id', as: 'video' });
+    videos.hasOne(videosMetadata, { foreignKey: 'video_id', as: 'video_metadata' });
     videos.hasMany(comments, { foreignKey: 'video_id', as: 'comments' });
     comments.belongsTo(videos, { foreignKey: 'video_id', as: 'video'} );
     return {

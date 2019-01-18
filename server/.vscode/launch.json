@@ -11,7 +11,7 @@
       "cwd": "${workspaceRoot}",
       "name": "DEBUG",
       "outFiles": ["${workspaceRoot}/dist/**/*.js"],
-      "program": "${workspaceRoot}/src/jobs/upload-to-s3.ts",
+      "program": "${workspaceRoot}/src/jobs/listen-to-sqs.ts",
       "runtimeExecutable": null,
       "sourceMaps": true,
 

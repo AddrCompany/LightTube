@@ -148,13 +148,12 @@ function processOneMessage(): void {
     if (msg) {
       const receipt: string = msg.ReceiptHandle;
       handleMessage(msg)
-      .then(() => deleteMessage(receipt))
-      .catch(err => {
-        console.error(err.message);
-        if (err instanceof VideoNotFound) {
-          deleteMessage(receipt)
+      .then(result => {
+        if (result) {
+          console.log("Successfully updated: metadata " + result.get().id);
         }
-      });
+        deleteMessage(receipt)
+      })
     } else {
       console.log("No new message");
     }

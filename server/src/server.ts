@@ -22,7 +22,7 @@ const sequelizeInstance = new sequelize('demo','postgres','Seattle2018', {
 const models = instantiateModels(sequelizeInstance);
 
 sequelizeInstance.sync({
-    force: true, // should not be used in production
+    force: false,
     logging: console.log
 })
 .then(() => {

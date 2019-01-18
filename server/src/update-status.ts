@@ -67,16 +67,16 @@ export function completeUpdate(
   .then(toTranscoderItem)
   .then(item =>
     models.videosMetadata.findOne({
-        where: {
-          transcoder_guid: guid
-        }
-      })
-      .then(metadata => {
-        if (metadata) {
-          return metadata.set("cloudfront_dash_url", item.cloudFront).save()
-        }
-        return null;
-      })
+      where: {
+        transcoder_guid: guid
+      }
+    })
+    .then(metadata => {
+      if (metadata) {
+        return metadata.set("cloudfront_dash_url", item.cloudFront).save()
+      }
+      return null;
+    })
   );
 }
 
