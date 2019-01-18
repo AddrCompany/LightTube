@@ -103,7 +103,7 @@ function parseNotification(notification: SNSNotification): any {
   return JSON.parse(notification.Message);
 }
 
-function deleteMessage(receipt: string) {
+function deleteMessage(receipt: string): Promise<{}> {
   return new Promise((resolve, reject) => {
     const deleteParams: AWS.SQS.DeleteMessageRequest = {
       QueueUrl: TRANSCODER_MESSAGE_QUEUE,
@@ -121,7 +121,7 @@ function deleteMessage(receipt: string) {
   });
 }
 
-function handleMessage(msg: AWS.SQS.Message): Promise<VideoMetadata> {
+function handleMessage(msg: AWS.SQS.Message): Promise<boolean> {
   const notification = parseMessage(msg) as SNSNotification;
   const body = parseNotification(notification);
   if (body.status &&
@@ -135,30 +135,30 @@ function handleMessage(msg: AWS.SQS.Message): Promise<VideoMetadata> {
     && body.workflowStatus === "Complete") {
       const complete = body as CompleteMessage;
       const guid = complete.guid;
-      return completeUpdate(guid, models);
+      const cloudFront = complete.cloudFront;
+      return completeUpdate(guid, cloudFront, models);
   }
   else {
     return Promise.reject(new Error("Unknown message"));
   }
 }
 
-function processOneMessage(): void {
-  receiveMessage()
-  .then(msg => {
-    if (msg) {
-      const receipt: string = msg.ReceiptHandle;
-      handleMessage(msg)
-      .then(result => {
-        if (result) {
-          console.log("Successfully updated: metadata " + result.get().id);
-        }
-        deleteMessage(receipt)
-      })
-    } else {
-      console.log("No new message");
-    }
-  })
-  .catch(console.error)
-}
-
-processOneMessage();
+receiveMessage()
+.then((msg: AWS.SQS.Message) => {
+  if (msg) {
+    const receipt: string = msg.ReceiptHandle;
+    handleMessage(msg)
+    .then(found => {
+      if (found) {
+        console.log("Successfully updated");
+      } else {
+        console.log("Item not found");
+      }
+      return deleteMessage(receipt)
+    })
+  } else {
+    console.log("No new message");
+    return null;
+  }
+})
+.catch((err) => console.error(err))

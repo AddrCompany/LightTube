@@ -79,22 +79,17 @@ export function uploadAllFilesAndCleanUp(): Promise<void[]> {
   return Promise.map(getAllFileNames(), fileName => 
     readVideo(UPLOAD_PATH + "/" + fileName)
     .then(data => uploadToBucket(fileName, data))
-    .then(sent =>
+    .then(() =>
       models.videosMetadata.findOne({
         where: {
           local_file_name: fileName
         }
       })
-      .then(VideoMetadata => console.log(sent, VideoMetadata))
     )
     .then(() => deleteFile(fileName))
   );
 }
 
 console.log("Initiating upload...")
-sequelizeInstance.sync({
-  force: false,
-  logging: console.log
-})
-.then(() => uploadAllFilesAndCleanUp())
+uploadAllFilesAndCleanUp()
 .then(() => console.log("Upload complete"));
