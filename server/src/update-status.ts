@@ -4,7 +4,7 @@ import { Models, VideoMetadata } from './model';
 
 AWS.config.update({region: 'us-east-1'});
 
-const TABLE_NAME = "LightTube-DefaultSolution";
+const TABLE_NAME = process.env.AWS_DDB_TABLE_NAME;
 
 type DynamoString = {
   S: string
@@ -61,7 +61,7 @@ function toTranscoderItem(obj: DynamoItem): TranscoderItem {
 }
 
 export function completeUpdate(
-  guid: string, cloudFront: string, models: Models
+  guid: string, cloudFront: string, thumbnail: string, models: Models
 ): Promise<boolean> {
   return new Promise((resolve) => {
     models.videosMetadata.findOne({
@@ -71,7 +71,8 @@ export function completeUpdate(
     })
     .then(metadata => {
       if (metadata) {
-        metadata.set("cloudfront_dash_url", cloudFront).save()
+        metadata.set("cloudfront_dash_url", cloudFront)
+        .set("img_url", thumbnail).save()
         .then(() => {
           resolve(true);
         })

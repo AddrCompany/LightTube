@@ -1,23 +1,32 @@
+import * as path from 'path';
+require('dotenv').config({ path: path.resolve(process.cwd(), '.env') })
+
 import * as Promise from 'bluebird';
 import * as AWS from 'aws-sdk';
 import { readFile, readdir, unlink } from 'fs';
 import { instantiateModels } from '../model';
 import * as sequelize from 'sequelize';
 
-const sequelizeInstance = new sequelize('demo','postgres','Seattle2018', {
-  host: 'localhost',
-  dialect: 'postgres',
-});
+const sequelizeInstance = new sequelize(
+  process.env.DATABASE_NAME,process.env.DATABASE_USER, process.env.DATABASE_PASSWORD,
+  {
+    host: 'localhost',
+    dialect: 'postgres',
+  }
+);
 
 const models = instantiateModels(sequelizeInstance);
 
-AWS.config.update({region: 'us-east-1'});
-// AWS.config.update({ accessKeyId: process.env.ACCESS_KEY_ID, secretAccessKey: process.env.SECRET_ACCESS_KEY });
+AWS.config.update({ region: process.env.AWS_REGION });
+AWS.config.update({
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+});
 
 const SUPPORTED_EXTENSIONS = ["mp4", "mpg", "m4v", "m2ts", "mov"];
 
 const UPLOAD_PATH: string = process.cwd() + "/uploads";
-const SOURCE_BUCKET_NAME = "lighttube-defaultsolution-source-j4lsscf2xt0r";
+const SOURCE_BUCKET_NAME = process.env.AWS_TRANSCODER_SOURCE_BUCKET;
 
 function getAllFileNames(): Promise<string[]> {
   return new Promise((resolve, reject) => {

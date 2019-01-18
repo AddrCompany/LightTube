@@ -1,3 +1,6 @@
+import * as path from 'path';
+require('dotenv').config({ path: path.resolve(process.cwd(), '.env') })
+
 import * as sequelize from 'sequelize';
 import * as express from 'express';
 import * as bodyParser from 'body-parser';
@@ -9,15 +12,19 @@ import * as fileUpload from 'express-fileupload';
 import { instantiateModels } from './model';
 import { ServerRequest, ServerResponse, mainRouter } from './main-router';
 
-const PORT = 8001;
+const PORT = process.env.PORT || 8001;
+
 class ServerError extends Error {
     status: number;
 }
 
-const sequelizeInstance = new sequelize('demo','postgres','Seattle2018', {
-    host: 'localhost',
-    dialect: 'postgres',
-});
+const sequelizeInstance = new sequelize(
+    process.env.DATABASE_NAME,process.env.DATABASE_USER, process.env.DATABASE_PASSWORD,
+    {
+        host: 'localhost',
+        dialect: 'postgres',
+    }
+);
 
 const models = instantiateModels(sequelizeInstance);
 

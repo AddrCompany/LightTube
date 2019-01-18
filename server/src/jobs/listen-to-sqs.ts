@@ -1,13 +1,19 @@
+import * as path from 'path';
+require('dotenv').config({ path: path.resolve(process.cwd(), '.env') })
+
 import * as Promise from 'bluebird';
 import * as AWS from 'aws-sdk';
 import { instantiateModels, VideoMetadata } from '../model';
 import * as sequelize from 'sequelize';
 import { ingestUpdate, completeUpdate } from '../update-status';
 
-const sequelizeInstance = new sequelize('demo','postgres','Seattle2018', {
-  host: 'localhost',
-  dialect: 'postgres',
-});
+const sequelizeInstance = new sequelize(
+  process.env.DATABASE_NAME,process.env.DATABASE_USER, process.env.DATABASE_PASSWORD,
+  {
+    host: 'localhost',
+    dialect: 'postgres',
+  }
+);
 
 const models = instantiateModels(sequelizeInstance);
 
@@ -40,7 +46,9 @@ interface CompleteMessage {
   hlsUrl: string,
   dashPlaylist: string,
   dashUrl: string,
-  guid: string
+  guid: string,
+  thumbNail: string[],
+  thumbNailUrl: string[]
 }
 
 interface SNSNotification {
@@ -63,10 +71,13 @@ class VideoNotFound extends Error {
   }
 }
 
-const TRANSCODER_MESSAGE_QUEUE = "https://sqs.us-east-1.amazonaws.com/554602455897/transcoder-queue";
+const TRANSCODER_MESSAGE_QUEUE = process.env.AWS_TRANSCODER_SQS;
 
-AWS.config.update({region: 'us-east-1'});
-// AWS.config.update({ accessKeyId: process.env.ACCESS_KEY_ID, secretAccessKey: process.env.SECRET_ACCESS_KEY });
+AWS.config.update({ region: process.env.AWS_REGION });
+AWS.config.update({
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+});
 
 const sqs = new AWS.SQS({apiVersion: '2012-11-05'});
 
@@ -136,7 +147,8 @@ function handleMessage(msg: AWS.SQS.Message): Promise<boolean> {
       const complete = body as CompleteMessage;
       const guid = complete.guid;
       const cloudFront = complete.cloudFront;
-      return completeUpdate(guid, cloudFront, models);
+      const thumbNailUrl = complete.thumbNailUrl;
+      return completeUpdate(guid, cloudFront, thumbNailUrl, models);
   }
   else {
     return Promise.reject(new Error("Unknown message"));
