@@ -3,7 +3,8 @@
       "outDir": "./dist",
       "allowJs": true,
       "target": "es5",
-      "lib": ["es6"]
+      "lib": ["es6"],
+      "sourceMap": true,
   },
   "include": [
       "./src/**/*"
