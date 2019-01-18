@@ -7,6 +7,8 @@ import { instantiateModels, VideoMetadata } from '../model';
 import * as sequelize from 'sequelize';
 import { ingestUpdate, completeUpdate } from '../update-status';
 
+const JOB_FREQUENCY = 1000 * 10; // every 10 seconds
+
 const sequelizeInstance = new sequelize(
   process.env.DATABASE_NAME,process.env.DATABASE_USER, process.env.DATABASE_PASSWORD,
   {
@@ -107,11 +109,19 @@ function receiveMessage(): Promise<AWS.SQS.Message> {
 }
 
 function parseMessage(msg: AWS.SQS.Message): any {
-  return JSON.parse(msg.Body);
+  try {
+    return JSON.parse(msg.Body);
+  } catch(e) {
+    return { Message: { status: "Failed" } };
+  }
 }
 
 function parseNotification(notification: SNSNotification): any {
-  return JSON.parse(notification.Message);
+  try {
+    return JSON.parse(notification.Message);
+  } catch(e) {
+    return { status: "Failed" };
+  }
 }
 
 function deleteMessage(receipt: string): Promise<{}> {
@@ -150,27 +160,38 @@ function handleMessage(msg: AWS.SQS.Message): Promise<boolean> {
       const thumbNailUrl = complete.thumbNailUrl[0];
       return completeUpdate(guid, cloudFront, thumbNailUrl, models);
   }
+  else if (body.status && body.status === "Failed") {
+    return Promise.resolve(false); // hack to not crash the server
+  }
   else {
     return Promise.reject(new Error("Unknown message"));
   }
 }
 
-receiveMessage()
-.then((msg: AWS.SQS.Message) => {
-  if (msg) {
-    const receipt: string = msg.ReceiptHandle;
-    handleMessage(msg)
-    .then(found => {
-      if (found) {
-        console.log("Successfully updated");
-      } else {
-        console.log("Item not found");
-      }
-      return deleteMessage(receipt)
-    })
-  } else {
-    console.log("No new message");
-    return null;
-  }
-})
-.catch((err) => console.error(err))
+
+function run() {
+  receiveMessage()
+  .then((msg: AWS.SQS.Message) => {
+    if (msg) {
+      const receipt: string = msg.ReceiptHandle;
+      handleMessage(msg)
+      .then(found => {
+        if (found) {
+          console.log("Successfully updated");
+        } else {
+          console.log("Item not found");
+        }
+        deleteMessage(receipt)
+        .then(() => setTimeout(run, JOB_FREQUENCY))
+        .catch(err => console.error(err));
+      })
+      .catch(err => console.error(err));
+    } else {
+      console.log("No new message");
+      setTimeout(run, JOB_FREQUENCY);
+    }
+  })
+  .catch((err) => console.error(err))
+}
+
+setTimeout(run, JOB_FREQUENCY);

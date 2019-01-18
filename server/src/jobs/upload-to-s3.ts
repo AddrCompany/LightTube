@@ -7,6 +7,8 @@ import { readFile, readdir, unlink } from 'fs';
 import { instantiateModels } from '../model';
 import * as sequelize from 'sequelize';
 
+const JOB_FREQUENCY = 1000 * 10; // every 10 seconds
+
 const sequelizeInstance = new sequelize(
   process.env.DATABASE_NAME,process.env.DATABASE_USER, process.env.DATABASE_PASSWORD,
   {
@@ -38,6 +40,7 @@ function getAllFileNames(): Promise<string[]> {
         const extension = file.split('.').pop();
         return (SUPPORTED_EXTENSIONS.indexOf(extension) !== -1)
       });
+      console.log("Files found: ", videoFileNames);
       resolve(videoFileNames);
     });
   });
@@ -99,6 +102,13 @@ export function uploadAllFilesAndCleanUp(): Promise<void[]> {
   );
 }
 
-console.log("Initiating upload...")
-uploadAllFilesAndCleanUp()
-.then(() => console.log("Upload complete"));
+function run() {
+  console.log("Initiating upload...")
+  uploadAllFilesAndCleanUp()
+  .then(() => {
+    console.log("Upload complete");
+    setTimeout(run, JOB_FREQUENCY);
+  });
+}
+
+setTimeout(run, JOB_FREQUENCY);
