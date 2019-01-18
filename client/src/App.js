@@ -19,28 +19,38 @@ class App extends Component {
 class CustomSideNav extends Component {
   constructor(props) {
     super(props);
-    let currentPath = this.props.location.pathname.substring(1);
-    if (currentPath === "") {
-      currentPath = "home";
-    }
     this.state = {
-      currentPath: currentPath,
+      atHome: true,
       marginLeft: '64px',
     };
   }
 
-  atHome = () => {
-    if (this.state.currentPath === "home") {
-      return true;
+  // react-router is a disappointment or maybe I am?
+  onlySelectedActive = (selected) => {
+    if (selected === "home") {
+      this.setState({
+        atHome: true,
+        atUpload: false
+      });
+    } else if (selected === "upload") {
+      this.setState({
+        atHome: false,
+        atUpload: true
+      });
+    } else {
+      this.setState({
+        atHome: false,
+        atUpload: false
+      });
     }
-    return false;
   }
 
-  atUpload = () => {
-    if (this.state.currentPath === "upload") {
-      return true;
+  componentWillMount() {
+    let currentPath = this.props.location.pathname.substring(1);
+    if (currentPath === "") {
+      currentPath = "home";
     }
-    return false;
+    this.onlySelectedActive(currentPath);
   }
 
   moveMain = (expanded) => {
@@ -54,7 +64,7 @@ class CustomSideNav extends Component {
 
   toggleSelect = (selected) => {
     let to = '/' + selected;
-    this.setState({currentPath: selected});
+    this.onlySelectedActive(selected);
     if (this.props.location.pathname !== to) {
       this.props.history.push(to);
     }
@@ -69,8 +79,8 @@ class CustomSideNav extends Component {
             style={{backgroundColor: '#222', borderRight: '1px solid', position: 'fixed', zIndex: 2}}
         >
             <SideNav.Toggle />
-            <SideNav.Nav defaultSelected={this.state.currentPath}>
-                <NavItem eventKey="home" active={this.atHome()}>
+            <SideNav.Nav>
+                <NavItem eventKey="home" active={this.state.atHome}>
                     <NavIcon>
                         <i className="fa fa-fw fa-home" style={{ fontSize: '1.75em' }} />
                     </NavIcon>
@@ -78,7 +88,7 @@ class CustomSideNav extends Component {
                         Home
                     </NavText>
                 </NavItem>
-                <NavItem eventKey="upload" active={this.atUpload()}>
+                <NavItem eventKey="upload" active={this.state.atUpload}>
                     <NavIcon>
                       <i className="fa fa-fw fa-upload" style={{ fontSize: '1.75em' }} />
                     </NavIcon>
@@ -93,7 +103,7 @@ class CustomSideNav extends Component {
           <div className="Container-videos">
               <Route path="/" exact component={props => <Home {...this.props} />} />
               <Route path="/home" component={props => <Home {...this.props} />} />
-              <Route path="/upload" component={props => <Upload {...this.props} />} />
+              <Route path="/upload" component={props => <Upload {...this.props} navTrigger={this.onlySelectedActive} />} />
           </div>
         </main>
       </React.Fragment>

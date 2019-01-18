@@ -81,7 +81,8 @@ export default class Upload extends Component {
       })
       .then(response => {
         if (response.status === 200) {
-          this.props.history.push("/");
+          this.props.history.push("/home");
+          this.props.navTrigger("home"); // hacky af
           alert("Successfully uploaded. Your video will shortly appear on the website");
         } else {
           alert("Upload unsuccessful. If the problem persists, email me at uneeb.agha@gmail.com. Thanks!");
