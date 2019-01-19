@@ -11,10 +11,14 @@ export default class Video extends Component {
     };
   }
 
+  goToVideo = () => {
+    console.log(this.state.video_id);
+  }
+
   render() {
     return (
       <div className="Video-container">
-        <img className="Video-thumbail" src={this.state.thumbnail} />
+        <img className="Video-thumbail" src={this.state.thumbnail} alt={this.state.title} onClick={this.goToVideo} />
         <div className="text-left Video-title">
           {this.state.title}
         </div>
