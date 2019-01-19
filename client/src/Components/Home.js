@@ -1,45 +1,66 @@
 import React, { Component } from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
+import Video from './Video';
 
 import './Home.css';
 
 export default class Home extends Component {
-  // https://github.com/CassetteRocks/react-infinite-scroller/blob/master/docs/src/index.js
   state = {
     hasMoreItems: true,
-    total: 16,
+    total: 0,
+    videos: []
   };
 
-  loadItems = (page) => {
-    let self = this;
-    setTimeout(function() {
-      let next = self.state.total + 12;
-      self.setState({total: next});
-    }, 1000);
+  loadItems = (_page) => {
+    this.loadAllVideos()
+    .then(videos => this.convertToDisplayableVideos(videos))
+    .then(displayVideos => this.setState({videos: displayVideos, total: displayVideos.length, hasMoreItems: false}));
   }
 
-  currentRow = (start) => {
-    let end = start + 3;
-    let allItems = [];
-    for (let i = start; i <= Math.min(end, this.state.total); i++) {
-      allItems.push(
+  currentRow = (startIndex) => {
+    let endIndex = startIndex + 3;
+    let itemInRow = [];
+    for (let i = startIndex; i <= Math.min(endIndex, this.state.total-1); i++) {
+      itemInRow.push(
           <div className="col-3" key={i}>
-            <div className="Video-container" />
+            <Video />
           </div>
       );
     }
-    return allItems;
+    return itemInRow;
+  }
+
+  convertToDisplayableVideos = (videos) => {
+    return videos.map(video => {
+      return {
+        video_id: video.video_id,
+        title: video.title,
+        description: video.description,
+        uploader: video.user,
+        likes: video.likes,
+        dislikes: video.dislikes,
+        views: video.views,
+        thumbnail: video.thumbnail_url,
+      };
+    })
+  }
+
+  loadAllVideos = () => {
+    const endpoint = "http://localhost:8001/videos";
+    return fetch(endpoint)
+    .then(response => response.json())
+    .then(json => json.videos);
   }
 
   render() {
     const loader = <div key={this.state.total} className="loader">Loading ...</div>;
-    let items = [];
+    let allVideoRows = [];
     let i = 0;
     let rowIndex = 0;
     let totalRows = Math.ceil(this.state.total/4.0);
     while (rowIndex < totalRows) {
       let row = this.currentRow(i);
-      items.push(
+      allVideoRows.push(
         <div className="row" key={'row'+rowIndex}>
           {row}
         </div>
@@ -61,7 +82,7 @@ export default class Home extends Component {
             loader={loader}>
 
             <div>
-              {items}
+              {allVideoRows}
             </div>
           </InfiniteScroll>
         </div>
