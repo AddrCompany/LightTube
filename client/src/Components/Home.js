@@ -23,7 +23,7 @@ export default class Home extends Component {
     for (let i = startIndex; i <= Math.min(endIndex, this.state.total-1); i++) {
       itemInRow.push(
           <div className="col-3" key={i}>
-            <Video />
+            <Video videoAttrs={this.state.videos[i]} />
           </div>
       );
     }
@@ -35,7 +35,6 @@ export default class Home extends Component {
       return {
         video_id: video.video_id,
         title: video.title,
-        description: video.description,
         uploader: video.user,
         likes: video.likes,
         dislikes: video.dislikes,

@@ -1,0 +1,21 @@
+.Video-container {
+  margin-bottom: 10%;
+  height: 200px;
+  color: white;
+}
+
+.Video-thumbail {
+  width: 100%;
+  border: solid 1px white;
+  margin: auto 0;
+  height: 80%;
+  overflow: hidden;
+}
+
+.Video-title {
+  font-weight: bold;
+}
+
+.Video-uploader {
+  font-size: 10pt;
+}
