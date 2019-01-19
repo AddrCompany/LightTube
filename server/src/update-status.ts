@@ -63,7 +63,7 @@ function toTranscoderItem(obj: DynamoItem): TranscoderItem {
 export function completeUpdate(
   guid: string, cloudFront: string, thumbnail: string, models: Models
 ): Promise<boolean> {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     models.videosMetadata.findOne({
       where: {
         transcoder_guid: guid
@@ -74,7 +74,10 @@ export function completeUpdate(
         metadata.set("cloudfront_dash_url", cloudFront)
         .set("img_url", thumbnail).save()
         .then(() => {
-          resolve(true);
+          models.videos.findById(metadata.getDataValue("video_id"))
+          .then(video => video.set("ready", true).save())
+          .then(() => resolve(true))
+          .catch(e => reject(e))
         })
       } else {
         resolve(false);

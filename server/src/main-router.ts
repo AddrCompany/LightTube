@@ -3,7 +3,7 @@ import { UploadedFile } from "express-fileupload";
 import * as uuidv4 from 'uuid/v4';
 import * as Promise from 'bluebird';
 
-import { Models, VideoAttrs, Video, VideoMetadataAttrs } from "./model";
+import { Models, VideoAttrs, Video, VideoMetadataAttrs, instantiateModels, CommentAttrs } from "./model";
 
 const SUPPORTED_EXTENSIONS = ["mp4", "mpg", "m4v", "m2ts", "mov"];
 
@@ -20,14 +20,84 @@ interface UploadRequest extends ServerRequest {
     }
 }
 
+interface CommentPostRequest extends ServerRequest {
+    body: {
+        comment: string,
+        user: string
+    }
+}
+
+interface ServingComment {
+    content: string,
+    user: string
+}
+
+interface ServingVideo {
+    video_id: number,
+    title: string,
+    description: string,
+    user: string,
+    likes: number,
+    dislikes: number,
+    views: number,
+    thumbnail_url: string,
+    video_url: string,
+    comments: ServingComment[]
+}
+
+interface ServingVideos {
+    videos: ServingVideo[]
+}
+
 const router = express.Router();
 
 router.get('/', function(req: ServerRequest, res: ServerResponse) {
     res.send("WeWorks");
 });
 
-router.get('/all', function(req: ServerRequest, res: ServerResponse) {
-    // database call and return
+router.get('/videos', function(req: ServerRequest, res: ServerResponse) {
+    findAllReadyVideos(req.models)
+    .then(videos => videos.map(video => video.get()))
+    .then(videosAttrs => toServingVideos(videosAttrs))
+    .then(servableVideos => res.json(servableVideos))
+    .catch(err => res.status(500).send(err))
+});
+
+router.post('/video/:id/comment', function(req: CommentPostRequest, res: ServerResponse) {
+    const video_id = parseInt(req.params.id);
+    const content = req.body.comment;
+    const user = req.body.user;
+    const commentParams: CommentAttrs = {
+        video_id: video_id,
+        comment: content,
+        user: user
+    };
+    req.models.comments.create(commentParams)
+    .then(() => findVideo(video_id, req.models))
+    .then(video => video.get())
+    .then(videoAttrs => toServingVideo(videoAttrs))
+    .then(servableVideo => res.json(servableVideo))
+    .catch(err => res.status(500).send(err))
+});
+
+router.post('/video/:id/like', function(req: ServerRequest, res: ServerResponse) {
+    const video_id = parseInt(req.params.id);
+    findVideo(video_id, req.models)
+    .then(video => video.increment("likes"))
+    .then(updatedVideo => updatedVideo.get())
+    .then(videoAttrs => toServingVideo(videoAttrs))
+    .then(servableVideo => res.json(servableVideo))
+    .catch(err => res.status(500).send(err))
+});
+
+router.post('/video/:id/dislike', function(req: ServerRequest, res: ServerResponse) {
+    const video_id = parseInt(req.params.id);
+    findVideo(video_id, req.models)
+    .then(video => video.increment("dislikes"))
+    .then(updatedVideo => updatedVideo.get())
+    .then(videoAttrs => toServingVideo(videoAttrs))
+    .then(servableVideo => res.json(servableVideo))
+    .catch(err => res.status(500).send(err))
 });
 
 router.post('/upload', function(req: UploadRequest, res: ServerResponse) {
@@ -73,6 +143,67 @@ function persistNewVideo(
         return models.videosMetadata.create(metadata)
         .then(() => video);
     })   
+}
+
+function findAllReadyVideos(models: Models): Promise<Video[]> {
+    return models.videos.findAll({
+        where: {
+            ready: true
+        },
+        include: [
+            {
+                model: models.videosMetadata,
+                as: "video_metadata"
+            },
+            {
+                model: models.comments,
+                as: "comments"
+            }
+        ]
+    });
+}
+
+function findVideo(primaryKey: number, models: Models): Promise<Video> {
+    return models.videos.findByPk(primaryKey, {
+        include: [
+            {
+                model: models.videosMetadata,
+                as: "video_metadata"
+            },
+            {
+                model: models.comments,
+                as: "comments"
+            }
+        ]
+    });
+}
+
+function toServingVideos(allVideos: VideoAttrs[]): ServingVideos {
+    return {
+        videos: allVideos.map(video => toServingVideo(video))
+    };
+}
+
+function toServingVideo(video: VideoAttrs): ServingVideo {
+    return {
+        video_id: video.id,
+        title: video.title,
+        description: video.description,
+        user: video.user,
+        likes: video.likes,
+        dislikes: video.dislikes,
+        views: video.views,
+        thumbnail_url: (video.video_metadata ? video.video_metadata.img_url : "http://defaultnothumbnail"),
+        video_url: (video.video_metadata ? video.video_metadata.cloudfront_dash_url : "http://videonotavailable"),
+        comments: video.comments.map(comment => toServingComment(comment))
+    }
+}
+
+function toServingComment(comment: CommentAttrs): ServingComment {
+    return {
+        content: comment.comment,
+        user: comment.user
+    }
 }
 
 export const mainRouter = router;

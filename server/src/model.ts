@@ -36,7 +36,8 @@ export interface VideoAttrs {
     dislikes?: number,
     views?: number,
     ready?: boolean,
-    comments?: CommentAttrs[]
+    comments?: CommentAttrs[],
+    video_metadata?: VideoMetadataAttrs,
 }
 
 export interface CommentAttrs {

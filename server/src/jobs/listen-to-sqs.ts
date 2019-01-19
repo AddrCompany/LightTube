@@ -156,7 +156,7 @@ function handleMessage(msg: AWS.SQS.Message): Promise<boolean> {
     && body.workflowStatus === "Complete") {
       const complete = body as CompleteMessage;
       const guid = complete.guid;
-      const cloudFront = complete.cloudFront;
+      const cloudFront = complete.dashUrl;
       const thumbNailUrl = complete.thumbNailUrl[0];
       return completeUpdate(guid, cloudFront, thumbNailUrl, models);
   }
