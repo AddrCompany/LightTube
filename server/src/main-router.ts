@@ -45,8 +45,19 @@ interface ServingVideo {
     comments: ServingComment[]
 }
 
+interface ServingVideoThumbnail {
+    video_id: number,
+    title: string,
+    user: string,
+    likes: number,
+    dislikes: number,
+    views: number,
+    thumbnail_url: string,
+    total_comments: number,
+}
+
 interface ServingVideos {
-    videos: ServingVideo[]
+    videos: ServingVideoThumbnail[]
 }
 
 const router = express.Router();
@@ -63,6 +74,15 @@ router.get('/videos', function(req: ServerRequest, res: ServerResponse) {
     .catch(err => res.status(500).send(err))
 });
 
+router.get('/video/:id', function(req: ServerRequest, res: ServerResponse) {
+    const video_id = parseInt(req.params.id);
+    findVideo(video_id, req.models)
+    .then(video => video.get())
+    .then(videoAttrs => toServingVideo(videoAttrs))
+    .then(servableVideo => res.json(servableVideo))
+    .catch(err => res.status(500).send(err))
+});
+
 router.post('/video/:id/comment', function(req: CommentPostRequest, res: ServerResponse) {
     const video_id = parseInt(req.params.id);
     const content = req.body.comment;
@@ -74,7 +94,8 @@ router.post('/video/:id/comment', function(req: CommentPostRequest, res: ServerR
     };
     req.models.comments.create(commentParams)
     .then(() => findVideo(video_id, req.models))
-    .then(video => video.get())
+    .then(video => video.increment("views"))
+    .then(updatedVideo => updatedVideo.get())
     .then(videoAttrs => toServingVideo(videoAttrs))
     .then(servableVideo => res.json(servableVideo))
     .catch(err => res.status(500).send(err))
@@ -180,8 +201,21 @@ function findVideo(primaryKey: number, models: Models): Promise<Video> {
 
 function toServingVideos(allVideos: VideoAttrs[]): ServingVideos {
     return {
-        videos: allVideos.map(video => toServingVideo(video))
+        videos: allVideos.map(video => toServingVideoThumbnail(video))
     };
+}
+
+function toServingVideoThumbnail(video: VideoAttrs): ServingVideoThumbnail {
+    return {
+        video_id: video.id,
+        title: video.title,
+        user: video.user,
+        likes: video.likes,
+        dislikes: video.dislikes,
+        views: video.views,
+        thumbnail_url: (video.video_metadata ? video.video_metadata.img_url : "http://defaultnothumbnail"),
+        total_comments: video.comments.length
+    }
 }
 
 function toServingVideo(video: VideoAttrs): ServingVideo {
@@ -195,7 +229,7 @@ function toServingVideo(video: VideoAttrs): ServingVideo {
         views: video.views,
         thumbnail_url: (video.video_metadata ? video.video_metadata.img_url : "http://defaultnothumbnail"),
         video_url: (video.video_metadata ? video.video_metadata.cloudfront_dash_url : "http://videonotavailable"),
-        comments: video.comments.map(comment => toServingComment(comment))
+        comments: video.comments.map(comment => toServingComment(comment)),
     }
 }
 
