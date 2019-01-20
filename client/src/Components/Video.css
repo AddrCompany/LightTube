@@ -28,5 +28,37 @@
 
 .Video-full {
   margin: 5%;
-  width: 60vw;
+}
+
+.Video-overlay {
+  background: rgba(0,0,0,0.7);
+}
+
+.Video-modal {
+  background-color:  rgba(255,255,255,1);
+  width: 100%;
+}
+
+.Comment-box {
+  border: 1px dotted black;
+  width: 100%;
+  padding: 1%;
+  border-radius: 0.5em;
+}
+
+.Comment-user {
+  font-size: 0.9em;
+  font-weight: bold;
+}
+
+.Comment-content {
+  font-size: 1.1em;
+}
+
+.Comment-form {
+  padding-top: 2%;
+  margin-top: 2%;
+  font-size: 0.8em;
+  border: 1px dotted black;
+  border-radius: 0.5em;
 }
