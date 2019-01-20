@@ -25,3 +25,8 @@
 .Video-uploader {
   font-size: 0.8em;
 }
+
+.Video-full {
+  margin: 5%;
+  width: 60vw;
+}

@@ -40,6 +40,7 @@ export default class Home extends Component {
         dislikes: video.dislikes,
         views: video.views,
         thumbnail: video.thumbnail_url,
+        total_comments: video.total_comments
       };
     })
   }
