@@ -150,7 +150,20 @@ class FullVideoComments extends Component {
     }
     return (
       <div className="Video-full">
-        {commentItems}
+        <video className="video-js vjs-default-skin Video-viewer"
+          controls preload="none" poster="//vjs.zencdn.net/v/oceans.png" data-setup='{}'>
+          <source src="//vjs.zencdn.net/v/oceans.mp4" type="video/mp4"></source>
+          <p className="vjs-no-js">
+            To view this video please enable JavaScript, and consider upgrading to a
+            web browser that
+            <a href="http://videojs.com/html5-video-support/" target="_blank" rel="noopener noreferrer">
+              supports HTML5 video
+            </a>
+          </p>
+        </video>
+        <div className="Comments-full">
+          {commentItems}
+        </div>
         <form className="Comment-form" onSubmit={this.handleSubmit}>
           <div className="form-group row">
             <label className="col-sm-2 col-form-label text-right" htmlFor="inputComment">Comment</label>

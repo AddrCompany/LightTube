@@ -39,9 +39,19 @@
   width: 100%;
 }
 
+.Video-viewer {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.Comments-full {
+  margin-top: 5%;
+}
+
 .Comment-box {
   border: 1px dotted black;
   width: 100%;
+  margin-top: 1%;
   padding: 1%;
   border-radius: 0.5em;
 }
