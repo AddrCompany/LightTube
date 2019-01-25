@@ -22,13 +22,22 @@ class Home extends Component {
   }
 
   currentRow = (startIndex) => {
-    let endIndex = startIndex + 3;
+    const endIndex = startIndex + 3;
     let itemInRow = [];
     for (let i = startIndex; i <= Math.min(endIndex, this.state.total-1); i++) {
+      const currentVideo = this.props.videos[i];
+      const video_id = currentVideo.video_id;
+      const title = currentVideo.title;
+      const thumbnail = currentVideo.thumbnail;
+      const uploader = currentVideo.uploader;
       itemInRow.push(
-          <div className="col-3" key={i}>
-            <Video videoAttrs={this.props.videos[i]} />
-          </div>
+        <div className="col-3" key={i}>
+          <Video
+            video_id={video_id}
+            title={title}
+            thumbnail={thumbnail}
+            uploader={uploader} />
+        </div>
       );
     }
     return itemInRow;

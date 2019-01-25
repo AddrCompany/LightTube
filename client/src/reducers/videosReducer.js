@@ -1,4 +1,4 @@
-import { FETCH_VIDEOS } from '../actions/types';
+import { FETCH_VIDEOS, FETCH_VIDEO } from '../actions/types';
 
 const initialState = {
   items: []
@@ -10,6 +10,11 @@ export default function(state = initialState, action) {
       return {
         ...state,
         items: action.payload
+      }
+    case FETCH_VIDEO:
+      return {
+        ...state,
+        item: action.payload 
       }
     default:
       return state;

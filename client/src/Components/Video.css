@@ -4,7 +4,7 @@
   color: white;
 }
 
-.Video-thumbail {
+.Video-thumbnail {
   width: 100%;
   border: solid 1px white;
   margin: auto 0;
@@ -12,7 +12,7 @@
   overflow: hidden;
 }
 
-.Video-thumbail:hover {
+.Video-thumbnail:hover {
   cursor: pointer;
   border: solid 1px blue;
 }

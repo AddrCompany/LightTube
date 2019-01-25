@@ -1,4 +1,4 @@
-import { FETCH_VIDEOS } from './types';
+import { FETCH_VIDEOS, FETCH_VIDEO } from './types';
 
 function loadAllVideos() {
 	const endpoint = "http://localhost:8001/videos";
@@ -29,4 +29,19 @@ export const fetchVideos = () => dispatch => {
 		type: FETCH_VIDEOS,
 		payload: displayVideos
 	}));
-};
+}
+
+function loadVideo(id) {
+	const endpoint = "http://localhost:8001/video/" + id;
+	return fetch(endpoint)
+		.then(response => response.json())
+}
+
+export const fetchVideo = (id) => dispatch => {
+	console.log("fetching.. " + id);
+	loadVideo(id)
+	.then(video => dispatch({
+		type: FETCH_VIDEO,
+		payload: video
+	}))
+}
