@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Modal from 'react-responsive-modal';
 import axios from 'axios';
 
+import VideoPlayer from './VideoPlayer';
 import './Video.css';
 
 export default class Video extends Component {
@@ -73,7 +74,7 @@ class FullVideoComments extends Component {
       viewerComment: "",
       viewerUser: "",
       viewerIsAnon: false,
-    };
+    };    
   }
 
   onChangeViewerComment = (event) => {
@@ -149,18 +150,8 @@ class FullVideoComments extends Component {
       i += 1;
     }
     return (
-      <div className="Video-full">
-        <video className="video-js vjs-default-skin Video-viewer"
-          controls preload="none" poster="//vjs.zencdn.net/v/oceans.png" data-setup='{}'>
-          <source src="//vjs.zencdn.net/v/oceans.mp4" type="video/mp4"></source>
-          <p className="vjs-no-js">
-            To view this video please enable JavaScript, and consider upgrading to a
-            web browser that
-            <a href="http://videojs.com/html5-video-support/" target="_blank" rel="noopener noreferrer">
-              supports HTML5 video
-            </a>
-          </p>
-        </video>
+      <div className="Video-full">      
+        <VideoPlayer url={this.state.video_url} />  
         <div className="Comments-full">
           {commentItems}
         </div>
