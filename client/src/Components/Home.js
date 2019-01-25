@@ -1,20 +1,24 @@
 import React, { Component } from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
 import Video from './Video';
+import { connect } from 'react-redux';
+import { fetchVideos } from '../actions/videoActions'
+import PropTypes from 'prop-types';
 
 import './Home.css';
 
-export default class Home extends Component {
+class Home extends Component {
   state = {
     hasMoreItems: true,
     total: 0,
-    videos: []
   };
 
   loadItems = (_page) => {
-    this.loadAllVideos()
-    .then(videos => this.convertToDisplayableVideos(videos))
-    .then(displayVideos => this.setState({videos: displayVideos, total: displayVideos.length, hasMoreItems: false}));
+    this.props.fetchVideos();
+    //  no pagination yet
+    this.setState({
+      hasMoreItems: false
+    })
   }
 
   currentRow = (startIndex) => {
@@ -23,33 +27,17 @@ export default class Home extends Component {
     for (let i = startIndex; i <= Math.min(endIndex, this.state.total-1); i++) {
       itemInRow.push(
           <div className="col-3" key={i}>
-            <Video videoAttrs={this.state.videos[i]} />
+            <Video videoAttrs={this.props.videos[i]} />
           </div>
       );
     }
     return itemInRow;
-  }
+  }  
 
-  convertToDisplayableVideos = (videos) => {
-    return videos.map(video => {
-      return {
-        video_id: video.video_id,
-        title: video.title,
-        uploader: video.user,
-        likes: video.likes,
-        dislikes: video.dislikes,
-        views: video.views,
-        thumbnail: video.thumbnail_url,
-        total_comments: video.total_comments
-      };
-    })
-  }
-
-  loadAllVideos = () => {
-    const endpoint = "http://localhost:8001/videos";
-    return fetch(endpoint)
-    .then(response => response.json())
-    .then(json => json.videos);
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.videos) {
+      this.setState({total: nextProps.videos.length});
+    } 
   }
 
   render() {
@@ -90,3 +78,14 @@ export default class Home extends Component {
     );
   }
 }
+
+Home.propTypes = {
+  fetchVideos: PropTypes.func.isRequired,
+  videos: PropTypes.array.isRequired
+};
+
+const mapStateToProps = state => ({
+  videos: state.videos.items
+})
+
+export default connect(mapStateToProps, { fetchVideos })(Home);

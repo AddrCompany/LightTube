@@ -1,8 +1,12 @@
 import React, { Component } from 'react';
 import SideNav, { NavItem, NavIcon, NavText } from '@trendmicro/react-sidenav';
 import { Route } from 'react-router-dom';
-import Home from './Components/Home';
-import Upload from './Components/Upload';
+import { Provider } from 'react-redux';
+
+import Home from './components/Home';
+import Upload from './components/Upload';
+
+import store from './store';
 
 import './App.css';
 
@@ -72,41 +76,43 @@ class CustomSideNav extends Component {
 
   render() {
     return (
-      <React.Fragment>
-        <SideNav
-            onToggle={this.moveMain}
-            onSelect={this.toggleSelect}
-            style={{backgroundColor: '#222', borderRight: '1px solid', position: 'fixed', zIndex: 2}}
-        >
-            <SideNav.Toggle />
-            <SideNav.Nav>
-                <NavItem eventKey="home" active={this.state.atHome}>
-                    <NavIcon>
-                        <i className="fa fa-fw fa-home" style={{ fontSize: '1.75em' }} />
-                    </NavIcon>
-                    <NavText>
-                        Home
-                    </NavText>
-                </NavItem>
-                <NavItem eventKey="upload" active={this.state.atUpload}>
-                    <NavIcon>
-                      <i className="fa fa-fw fa-upload" style={{ fontSize: '1.75em' }} />
-                    </NavIcon>
-                    <NavText>
-                        Upload
-                    </NavText>
-                </NavItem>
-            </SideNav.Nav>
-        </SideNav>
-        <main style={{marginLeft: this.state.marginLeft}}>
-          <TopNav />
-          <div className="Container-videos">
-              <Route path="/" exact component={props => <Home {...this.props} />} />
-              <Route path="/home" component={props => <Home {...this.props} />} />
-              <Route path="/upload" component={props => <Upload {...this.props} navTrigger={this.onlySelectedActive} />} />
-          </div>
-        </main>
-      </React.Fragment>
+      <Provider store={store}>
+        <React.Fragment>
+          <SideNav
+              onToggle={this.moveMain}
+              onSelect={this.toggleSelect}
+              style={{backgroundColor: '#222', borderRight: '1px solid', position: 'fixed', zIndex: 2}}
+          >
+              <SideNav.Toggle />
+              <SideNav.Nav>
+                  <NavItem eventKey="home" active={this.state.atHome}>
+                      <NavIcon>
+                          <i className="fa fa-fw fa-home" style={{ fontSize: '1.75em' }} />
+                      </NavIcon>
+                      <NavText>
+                          Home
+                      </NavText>
+                  </NavItem>
+                  <NavItem eventKey="upload" active={this.state.atUpload}>
+                      <NavIcon>
+                        <i className="fa fa-fw fa-upload" style={{ fontSize: '1.75em' }} />
+                      </NavIcon>
+                      <NavText>
+                          Upload
+                      </NavText>
+                  </NavItem>
+              </SideNav.Nav>
+          </SideNav>
+          <main style={{marginLeft: this.state.marginLeft}}>
+            <TopNav />
+            <div className="Container-videos">
+                <Route path="/" exact component={props => <Home {...this.props} />} />
+                <Route path="/home" component={props => <Home {...this.props} />} />
+                <Route path="/upload" component={props => <Upload {...this.props} navTrigger={this.onlySelectedActive} />} />
+            </div>
+          </main>
+        </React.Fragment>
+      </Provider>
     );
   }
 }
