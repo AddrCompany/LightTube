@@ -1,0 +1,29 @@
+.TopNav-navbar {
+  background-color:#EEE;
+}
+
+.TopNav-brand {
+  font-family: 'Roboto';
+  color: #222222;
+}
+
+.TopNav-logo {
+  margin-right: 15px;
+  margin-left: 20px;
+}
+
+.TopNav-upload {
+  font-family: 'Roboto';
+  color: red;
+  border: none;
+  background: none;
+}
+
+
+.TopNav-upload:hover {
+  cursor: pointer;
+}
+
+.TopNav-upload-icon {
+  padding-right: 20px;
+}

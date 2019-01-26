@@ -1,15 +1,14 @@
 .Upload-full {
-  padding-top: 5%;
-  margin-left: 5%;
-  margin-right: 10%;
-  overflow: hidden;
-  z-index: -1;
-  color: white;
+  color: black;
 }
 
 .Upload-header {
-  margin: 2%;
-  text-align: left;
+  text-align: center;
   font-size: calc(10px + 2vmin);
-  color: white;
+  color: black;
+}
+
+.Upload-form {
+  display: flex;
+  flex-direction: column;
 }

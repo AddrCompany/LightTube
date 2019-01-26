@@ -12,7 +12,6 @@ class Upload extends Component {
     description: "",
     user: "",
     file: null,
-    isAnon: false,
     loaded: 0,
     loading: false
   };
@@ -74,60 +73,43 @@ class Upload extends Component {
     }
   }
 
-  toggleAnon = (event) => {
-    const target = event.target;
-    const value = target.type === 'checkbox' ? target.checked : target.value;
-    if (value) {
-      this.setState({isAnon: true, user: "Anonymous"});
-    } else {
-      this.setState({isAnon: false, user: ""});
-    }
-  }
-
   componentWillReceiveProps(nextProps) {
     if (nextProps.progress === 100) {
       alert("Successfully uploaded. Your video will shortly appear on the website");
-      this.props.history.push("/home");
-      this.props.navTrigger("home"); // hacky af
+      this.props.onClose(); // close modal
     }
   }
 
   render() {
     let loader = (
-      <div className="container mt-4" >
+      <div className="Upload-progressbar">
           {this.props.progress}% loaded
       </div>
     );
     return (
       <div className="Upload-full">
-        <header className="Upload-header">
-          <p style={{color: 'white', fontFamily: 'Sans Serif'}}>Upload</p>
-        </header>
-        <form onSubmit={this.handleSubmit}>
+        <header className="Upload-header"><p>Upload</p></header>
+        <form className="Upload-form" onSubmit={this.handleSubmit}>
           <div className="form-group row">
-            <label className="col-sm-2 col-form-label text-right" htmlFor="inputTitle">Title</label>
+            <label className="col-sm-3 col-form-label text-right" htmlFor="inputTitle">Title</label>
             <div className="col-sm-8">
               <input value={this.state.title} type="text" className="form-control" id="inputTitle" aria-describedby="titleHelp" placeholder="Enter title" onChange={this.onChangeTitle} />
             </div>
           </div>
           <div className="form-group row">
-            <label className="col-sm-2 col-form-label text-right" htmlFor="inputDescription">Description</label>
+            <label className="col-sm-3 col-form-label text-right" htmlFor="inputDescription">Description</label>
             <div className="col-sm-8">
               <textarea value={this.state.description} className="form-control" id="inputDescription" aria-describedby="descriptionHelp" placeholder="Enter description" onChange={this.onChangeDescription} />
             </div>
           </div>
           <div className="form-group row">
-            <label className="col-sm-2 col-form-label text-right" htmlFor="inputUser">Submitted by</label>
+            <label className="col-sm-3 col-form-label text-right" htmlFor="inputUser">User</label>
             <div className="col-sm-8">
-              <input type="text" disabled={this.state.isAnon} value={this.state.user} className="form-control" id="inputUser" aria-describedby="userHelp" placeholder="Enter user" onChange={this.onChangeUser} />
-              <div className="pl-4 float-left">
-                <input type="checkbox" className="form-check-input" id="anonCheck" checked={this.state.isAnon} onChange={this.toggleAnon} />
-                <label className="form-check-label" htmlFor="anonCheck">anonymous</label>
-              </div>
+              <input type="text" value={this.state.user} className="form-control" id="inputUser" aria-describedby="userHelp" placeholder="Enter user" onChange={this.onChangeUser} />
             </div>
           </div>
           <div className="form-group row">
-            <label className="col-sm-2 col-form-label text-right" htmlFor="inputUpload">Upload</label>
+            <label className="col-sm-3 col-form-label text-right" htmlFor="inputUpload">Video file</label>
             <div className="col-sm-8">
               <div  className="custom-file">
                 <input type="file" ref={ref => (this.uploadInput = ref)} className="custom-file-input" id="customFile" onChange={this.onChangeFile}
@@ -137,7 +119,12 @@ class Upload extends Component {
               </div>
             </div>
           </div>
-          <button type="submit" className="btn btn-primary">Submit</button>
+          <div className="row">
+            <div className="col-sm-3"></div>
+            <div className="col-sm-3">
+              <button type="submit" className="btn btn-primary">Submit</button>
+            </div>
+          </div>
         </form>
         {this.state.loading ? loader : null}
       </div>

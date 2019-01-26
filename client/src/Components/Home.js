@@ -68,9 +68,7 @@ class Home extends Component {
 
     return (
       <div className="Videos-full">
-        <header className="Videos-header">
-          <p style={{color: 'white', fontFamily: 'Sans Serif'}}>New Videos</p>
-        </header>
+        <header className="Videos-header"></header>
         <div className="Videos-all container-fluid">
           <InfiniteScroll
             pageStart={0}
