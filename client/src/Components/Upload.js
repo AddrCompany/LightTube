@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
-import axios from 'axios';
+import { connect } from 'react-redux';
+import { uploadVideo } from '../actions/uploadActions'
+import PropTypes from 'prop-types';
 
 import './Upload.css';
 
-export default class Upload extends Component {
+class Upload extends Component {
   state = {
     fileLabel: "Choose file",
     title: "",
@@ -64,21 +66,14 @@ export default class Upload extends Component {
   handleSubmit = (event) => {
     event.preventDefault();
     let valid = this.validateFields();
-    const endpoint = "http://localhost:8001/upload";
     if (valid) {
-      const data = new FormData();
-      data.append('file', this.state.file);
-      data.append('title', this.state.title);
-      data.append('description', this.state.description);
-      data.append('user', this.state.user);
-      axios.post(endpoint, data, {
-        onUploadProgress: ProgressEvent => {
-          this.setState({
-            loading: true,
-            loaded: parseInt(ProgressEvent.loaded / ProgressEvent.total*100),
-          });
-        },
-      })
+      this.props.uploadVideo(this.state.file, this.state.title, this.state.description, this.state.user);
+      this.setState({
+        loading: true
+      });
+    }
+  }
+      /*
       .then(response => {
         if (response.status === 200) {
           this.props.history.push("/home");
@@ -88,8 +83,7 @@ export default class Upload extends Component {
           alert("Upload unsuccessful. If the problem persists, email me at uneeb.agha@gmail.com. Thanks!");
         }
       });
-    }
-  }
+      */
 
   toggleAnon = (event) => {
     const target = event.target;
@@ -101,10 +95,18 @@ export default class Upload extends Component {
     }
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.progress === 100) {
+      alert("Successfully uploaded. Your video will shortly appear on the website");
+      this.props.history.push("/home");
+      this.props.navTrigger("home"); // hacky af
+    }
+  }
+
   render() {
     let loader = (
       <div className="container mt-4" >
-          {this.state.loaded}% loaded
+          {this.props.progress}% loaded
       </div>
     );
     return (
@@ -153,3 +155,13 @@ export default class Upload extends Component {
     );
   }
 }
+
+Upload.propTypes = {
+  uploadVideo: PropTypes.func.isRequired,
+};
+
+const mapStateToProps = state => ({
+  progress: state.upload.progress
+})
+
+export default connect(mapStateToProps, { uploadVideo })(Upload);
