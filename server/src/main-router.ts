@@ -77,7 +77,8 @@ router.get('/videos', function(req: ServerRequest, res: ServerResponse) {
 router.get('/video/:id', function(req: ServerRequest, res: ServerResponse) {
     const video_id = parseInt(req.params.id);
     findVideo(video_id, req.models)
-    .then(video => video.get())
+    .then(video => video.increment("views"))
+    .then(updatedVideo => updatedVideo.get())
     .then(videoAttrs => toServingVideo(videoAttrs))
     .then(servableVideo => res.json(servableVideo))
     .catch(err => res.status(500).send(err))
@@ -93,11 +94,8 @@ router.post('/video/:id/comment', function(req: CommentPostRequest, res: ServerR
         user: user
     };
     req.models.comments.create(commentParams)
-    .then(() => findVideo(video_id, req.models))
-    .then(video => video.increment("views"))
-    .then(updatedVideo => updatedVideo.get())
-    .then(videoAttrs => toServingVideo(videoAttrs))
-    .then(servableVideo => res.json(servableVideo))
+    .then(comment => toServingComment(comment.get()))
+    .then(servableComment => res.json(servableComment))
     .catch(err => res.status(500).send(err))
 });
 
