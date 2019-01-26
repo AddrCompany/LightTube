@@ -1,18 +1,16 @@
 import React, { Component } from 'react';
-
-import axios from 'axios';
+import { connect } from 'react-redux';
+import { postComment } from '../actions/commentActions'
+import PropTypes from 'prop-types';
 
 import VideoPlayer from './VideoPlayer';
 
 import './Video.css';
 
-export default class FullVideoComments extends Component {
+class FullVideoComments extends Component {
   constructor(props) {
     super(props);
-    // video_id, title, description, user, likes, dislikes, views, thumbnail_url, video_url, comments
-    // comments: content, user
     this.state = {
-      ...this.props.videoAttrs,
       viewerComment: "",
       viewerUser: "",
       viewerIsAnon: false,
@@ -60,26 +58,25 @@ export default class FullVideoComments extends Component {
   handleSubmit = (event) => {
     event.preventDefault();
     let valid = this.validateFields();
-    const endpoint = "http://localhost:8001/video/" + this.state.video_id + "/comment";
     if (valid) {
-      const data = new FormData();
-      data.append('comment', this.state.viewerComment);
-      data.append('user', this.state.viewerUser);
-      axios.post(endpoint, data)
-      .then(response => {
-        this.setState({
-          ...response.data,
-          viewerComment: "",
-          viewerUser: "",
-          viewerIsAnon: false,
-        });
+      this.props.postComment(this.props.video_id, this.state.viewerComment, this.state.viewerUser)
+      this.setState({
+        viewerComment: "",
+        viewerUser: "",
+        viewerIsAnon: false
       });
     }
   }
 
+  componentWillReceiveProps(nextProps) {
+    console.log(nextProps.comment);
+    if (nextProps.comment) {
+      this.props.comments.unshift(nextProps.comment);
+    }
+  }
 
   render() {
-    const allComments = this.state.comments;
+    const allComments = this.props.comments;
     let commentItems = [];
     let i = 0;
     while (i < allComments.length) {
@@ -93,7 +90,7 @@ export default class FullVideoComments extends Component {
     }
     return (
       <div className="Video-full">      
-        <VideoPlayer url={this.state.video_url} />  
+        <VideoPlayer url={this.props.video_url} />  
         <div className="Comments-full">
           {commentItems}
         </div>
@@ -122,3 +119,18 @@ export default class FullVideoComments extends Component {
     );
   }
 }
+
+FullVideoComments.propTypes = {
+  postComment: PropTypes.func.isRequired,
+  video_id: PropTypes.number.isRequired,
+  title: PropTypes.string.isRequired,
+  comments: PropTypes.array.isRequired,
+  video_url: PropTypes.string.isRequired,
+  user: PropTypes.string.isRequired
+};
+
+const mapStateToProps = state => ({
+  comment: state.comment.item
+})
+
+export default connect(mapStateToProps, { postComment })(FullVideoComments);

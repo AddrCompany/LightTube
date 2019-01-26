@@ -13,17 +13,18 @@ class Video extends Component {
     openVideo: false
   };
 
-  onOpenModal = () => {
-    this.setState({ openVideo: true });
-  };
- 
   onCloseModal = () => {
     this.setState({ openVideo: false });
   };
 
   goToVideo = () => {
     this.props.fetchVideo(this.props.video_id);
-    this.onOpenModal();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.video && nextProps.video.video_id === this.props.video_id) {
+      this.setState({ openVideo: true });
+    }
   }
 
   render() {
@@ -37,7 +38,7 @@ class Video extends Component {
           open={this.state.openVideo}
           onClose={this.onCloseModal}
           center closeOnEsc closeOnOverlayClick>
-          <FullVideoComments videoAttrs={this.props.video} />
+          <FullVideoComments {...this.props.video} />
         </Modal>
         <img className="Video-thumbnail" src={this.props.thumbnail} alt={this.props.title} onClick={this.goToVideo} />
         <div className="text-left Video-title">

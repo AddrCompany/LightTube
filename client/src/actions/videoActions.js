@@ -38,7 +38,6 @@ function loadVideo(id) {
 }
 
 export const fetchVideo = (id) => dispatch => {
-	console.log("fetching.. " + id);
 	loadVideo(id)
 	.then(video => dispatch({
 		type: FETCH_VIDEO,
