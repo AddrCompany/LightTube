@@ -98,7 +98,7 @@ class FullVideoComments extends Component {
           <div className="form-group row">
             <label className="col-sm-2 col-form-label text-right" htmlFor="inputComment">Comment</label>
             <div className="col-sm-8">
-              <textarea value={this.state.userComment} className="form-control" id="inputComment" aria-describedby="commentHelp" placeholder="Enter comment" onChange={this.onChangeViewerComment} />
+              <textarea value={this.state.viewerComment} className="form-control" id="inputComment" aria-describedby="commentHelp" placeholder="Enter comment" onChange={this.onChangeViewerComment} />
             </div>
           </div>
           <div className="form-group row">
