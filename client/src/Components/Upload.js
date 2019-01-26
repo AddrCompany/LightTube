@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { uploadVideo } from '../actions/uploadActions'
 import PropTypes from 'prop-types';
+import CircularProgressbar from "react-circular-progressbar";
+import "react-circular-progressbar/dist/styles.css";
 
 import './Upload.css';
 
@@ -81,9 +83,10 @@ class Upload extends Component {
   }
 
   render() {
+    let percentage = this.props.progress;
     let loader = (
-      <div className="Upload-progressbar">
-          {this.props.progress}% loaded
+      <div style={{ width: "100px", margin: "0 auto" }}>
+        <CircularProgressbar percentage={percentage} text={`${percentage}%`} />
       </div>
     );
     return (
@@ -122,7 +125,7 @@ class Upload extends Component {
           <div className="row">
             <div className="col-sm-3"></div>
             <div className="col-sm-3">
-              <button type="submit" className="btn btn-primary">Submit</button>
+              {this.state.loading? null : (<button type="submit"  className="btn btn-primary">Submit</button>)}
             </div>
           </div>
         </form>
