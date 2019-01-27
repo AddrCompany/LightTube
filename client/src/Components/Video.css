@@ -1,45 +1,70 @@
-.Video-container {
-  padding-top: 10px;
-  padding-bottom: 20px;
-  border-radius: 10px;
-  font-family: sans-serif;
-  background-color: #F5F5F5;
-  box-shadow: 1px 1px 10px #DDD;
+.nopadding {
+  padding: 0 !important;
+  margin: 0 !important;
 }
 
-.Video-thumbnail {
+hr {
+  margin-top: 2px !important
+}
+
+.Video-full {
+  margin-top: 100px;
+  margin-left: 50px;
+}
+
+.Video-paywallContainer {
+  width: 852px;
+  height: 480px;
+  position: relative;
+  overflow: hidden;
+}
+
+.Video-paywall {
   width: 100%;
+  filter: blur(4px);
+  opacity: 0.8;
 }
 
-.Video-container:hover {
-  cursor: pointer;
-  box-shadow: 1px 1px 10px #333;
+.Video-paywallButton {
+  position: absolute;
+  padding-left: 20px;
+  padding-right: 20px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
 }
 
+.Video-info {
+  width: 852px;
+}
 
 .Video-title {
-  padding-left: 2px;
   font-size: 1.2em;
+  font-family: sans-serif;
+  padding-bottom: 2px;
 }
 
 .Video-uploader {
-  padding-left: 2px;
+  font-size: 1.0em;
+  font-family: sans-serif;
+  margin-bottom: 10px;
+}
+
+.Video-description {
   font-size: 0.8em;
+  font-family: sans-serif;
 }
 
-.Video-overlay {
-  background: rgba(0,0,0,0.7);
+.Video-views {
+  font-size: 0.8em;
+  color: #AAA;
 }
 
-.Video-modal {
-  margin-top: 50px;
-  background-color:  rgba(255,255,255,1);
-  width: 100%;
-}
-
-.Video-viewer {
-  width: 100% !important;
-  height: 100% !important;
+.Video-value {
+  font-size: 0.8em;
+  color: #AAA;
+  text-align: right;
 }
 
 .Comments-full {

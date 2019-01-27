@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import logo from './logo.png';
+import { Link } from 'react-router-dom';
 
+import logo from './logo.png';
 import './TopNav.css';
 
 export default class TopNav extends Component {
@@ -8,10 +9,12 @@ export default class TopNav extends Component {
   render() {
     return (
       <nav className="navbar fixed-top navbar-light shadow TopNav-navbar">
-        <div className="navbar-brand">
-          <img src={logo} height="30" className="d-inline-block align-top TopNav-logo" alt="logo" />
-          <span className="TopNav-brand">LightTube</span>
-        </div>
+        <Link to="/" style={{ textDecoration: 'none', color: 'black' }}>
+          <div className="navbar-brand">
+            <img src={logo} height="30" className="d-inline-block align-top TopNav-logo" alt="logo" />
+            <span className="TopNav-brand">LightTube</span>
+          </div>
+        </Link>
         <ul className="nav justify-content-end">
           <li className="nav-item">
             <button className="nav-link TopNav-upload"  onClick={this.props.triggerUpload}>

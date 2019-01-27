@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
-import Video from './Video';
+import VideoContainer from './VideoContainer';
 import { connect } from 'react-redux';
 import { fetchVideos } from '../actions/videoActions'
 import PropTypes from 'prop-types';
@@ -32,7 +32,7 @@ class Home extends Component {
       const uploader = currentVideo.uploader;
       itemInRow.push(
         <div className="col-3" key={i}>
-          <Video
+          <VideoContainer
             video_id={video_id}
             title={title}
             thumbnail={thumbnail}
@@ -69,7 +69,7 @@ class Home extends Component {
     return (
       <div className="Videos-full">
         <header className="Videos-header"></header>
-        <div className="Videos-all container-fluid">
+        <div className="container-fluid">
           <InfiniteScroll
             pageStart={0}
             loadMore={this.loadItems}

@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import { Provider } from 'react-redux';
 import Modal from 'react-responsive-modal';
+import { Route, Switch } from 'react-router-dom';
 
 import Home from './components/Home';
 import Upload from './components/Upload';
 import TopNav from './components/TopNav';
+import Video from './components/Video';
 
 import store from './store';
 
@@ -42,9 +44,10 @@ class App extends Component {
             center closeOnEsc closeOnOverlayClick>
             <Upload onClose={this.onCloseUploadModal} />
           </Modal>
-          <div>
-            <Home />
-          </div>
+          <Switch>
+            <Route path="/" exact component={Home} />
+            <Route path="/video/:id" component={Video} />
+          </Switch>
         </main>
       </Provider>
     );

@@ -1,18 +1,10 @@
 .Videos-full {
-    padding-top: 5%;
-    margin-left: 5%;
-    margin-right: 10%;
-    overflow: hidden;
-    z-index: -1;
+    margin-top: 100px;
+    margin-left: 50px;
 }
 
 .Videos-header {
-    margin: 2%;
     text-align: left;
     font-size: calc(10px + 2vmin);
     color: black;
-}
-
-.Videos-all {
-    margin: 1%;
 }
