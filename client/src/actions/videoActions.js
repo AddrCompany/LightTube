@@ -15,6 +15,7 @@ function convertToDisplayableVideos(videos) {
 			uploader: video.user,
 			views: video.views,
 			thumbnail: video.thumbnail_url,
+			value: 12.2135, // replace me
 		};
 	})
 }

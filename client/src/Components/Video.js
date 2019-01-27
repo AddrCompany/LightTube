@@ -66,7 +66,7 @@ class Video extends Component {
     const allComments = this.props.video.comments;
     let commentItems = [];
     if (allComments.length === 0) {
-      commentItems.push(<div className="font-italic Comment-content">No comments</div>)
+      commentItems.push(<div key={0} className="font-italic Comment-content">No comments</div>)
     }
     let i = 0;
     while (i < allComments.length) {
@@ -126,7 +126,7 @@ class Video extends Component {
               <div className="col-6 nopadding">
                 <div className="row justify-content-end">
                   <div className="Video-value col-4">
-                    ${value} spent
+                    ${value} accrued
                   </div>
                 </div>
               </div>

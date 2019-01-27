@@ -30,13 +30,17 @@ class Home extends Component {
       const title = currentVideo.title;
       const thumbnail = currentVideo.thumbnail;
       const uploader = currentVideo.uploader;
+      const views = currentVideo.views;
+      const value = currentVideo.value.toFixed(2);
       itemInRow.push(
         <div className="col-3" key={i}>
           <VideoContainer
             video_id={video_id}
             title={title}
             thumbnail={thumbnail}
-            uploader={uploader} />
+            uploader={uploader}
+            views={views}
+            value={value} />
         </div>
       );
     }
