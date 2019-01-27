@@ -15,7 +15,7 @@ function convertToDisplayableVideos(videos) {
 			uploader: video.user,
 			views: video.views,
 			thumbnail: video.thumbnail_url,
-			value: 12.2135, // replace me
+			value: 0, // replace me
 		};
 	})
 }
@@ -45,7 +45,7 @@ function convertToDisplayableVideo(video) {
     dislikes: video.dislikes,
     views: video.views,
 		thumbnail: video.thumbnail_url,
-		value: 5.5432, // replace me
+		value: 0, // replace me
     video_url: video.video_url,
     comments: video.comments
 	};

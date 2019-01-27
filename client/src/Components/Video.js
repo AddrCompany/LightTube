@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { fetchVideo } from '../actions/videoActions'
+import { postComment } from '../actions/commentActions'
 import PropTypes from 'prop-types';
 
 import VideoPlayer from './VideoPlayer';
@@ -10,13 +11,55 @@ import './Video.css';
 class Video extends Component {
   state = {
     loading: true,
-    paid: false
+    paid: false,
+    viewerComment: "",
+    viewerUser: "",
   };
 
   showPaywallModal = (event) => {
     this.setState({
       paid: true
     })
+  }
+
+  onChangeViewerComment = (event) => {
+    let value = event.target.value;
+    this.setState({
+      viewerComment: value
+    });
+  }
+
+  onChangeViewerUser = (event) => {
+    let value = event.target.value;
+    this.setState({
+      viewerUser: value
+    });
+  }
+
+  validateFields = () => {
+    const comment = this.state.viewerComment;
+    const user = this.state.viewerUser;
+    if (comment === "") {
+      alert("Comment can not be empty");
+      return false;
+    }
+    if (user === "") {
+      alert("User can not be empty");
+      return false
+    }
+    return true;
+  }
+
+  handleSubmit = (event) => {
+    event.preventDefault();
+    let valid = this.validateFields();
+    if (valid) {
+      this.props.postComment(this.props.video.video_id, this.state.viewerComment, this.state.viewerUser)
+      this.setState({
+        viewerComment: "",
+        viewerUser: ""
+      });
+    }
   }
 
   componentDidMount() {
@@ -28,6 +71,9 @@ class Video extends Component {
       this.setState({
         loading: false
       })
+    }
+    if (nextProps.newComment) {
+      this.props.video.comments.push(nextProps.newComment);
     }
   }
 
@@ -97,7 +143,7 @@ class Video extends Component {
     return (
       <div className="Video-paywallContainer">
         <img src={thumbnail} className="Video-paywall" alt={title} />
-        <button className="btn btn-primary Video-paywallButton" onClick={this.showPaywallModal}>Pay</button>
+        <button className="btn btn-primary Video-paywallButton" onClick={this.showPaywallModal}>click to view</button>
       </div>
     );
   }
@@ -155,7 +201,8 @@ Video.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  video: state.videos.item
+  video: state.videos.item,
+  newComment: state.comment.item
 })
 
-export default connect(mapStateToProps, { fetchVideo })(Video);
+export default connect(mapStateToProps, { fetchVideo, postComment })(Video);
