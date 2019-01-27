@@ -5,8 +5,6 @@ import PropTypes from 'prop-types';
 
 import VideoPlayer from './VideoPlayer';
 
-import './FullVideoComments.css';
-
 class FullVideoComments extends Component {
   constructor(props) {
     super(props);

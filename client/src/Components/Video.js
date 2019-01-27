@@ -14,7 +14,9 @@ class Video extends Component {
   };
 
   showPaywallModal = (event) => {
-    console.log("yolo");
+    this.setState({
+      paid: true
+    })
   }
 
   componentDidMount() {
@@ -35,9 +37,37 @@ class Video extends Component {
     );
   }
 
+  renderCommentSubmitForm() {
+    return (
+      <form className="Comment-form" onSubmit={this.handleSubmit}>
+        <div className="form-group row">
+          <label className="col-sm-2 col-form-label text-right" htmlFor="inputComment">Comment</label>
+          <div className="col-sm-6">
+            <textarea value={this.state.viewerComment} className="form-control form-control-sm" id="inputComment" aria-describedby="commentHelp" placeholder="Enter comment" onChange={this.onChangeViewerComment} />
+          </div>
+        </div>
+        <div className="form-group row">
+          <label className="col-sm-2 col-form-label text-right" htmlFor="inputUser">User</label>
+          <div className="col-sm-6">
+            <input type="text" value={this.state.viewerUser} className="form-control form-control-sm" id="inputUser" aria-describedby="userHelp" placeholder="Enter user" onChange={this.onChangeViewerUser} />
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-sm-2"></div>
+          <div className="col-sm-2">
+            <button type="submit" className="btn btn-primary btn-sm">Submit</button>
+          </div>
+        </div>
+      </form>
+    );
+  }
+
   renderComments() {
     const allComments = this.props.video.comments;
     let commentItems = [];
+    if (allComments.length === 0) {
+      commentItems.push(<div className="font-italic Comment-content">No comments</div>)
+    }
     let i = 0;
     while (i < allComments.length) {
       commentItems.push(
@@ -49,31 +79,14 @@ class Video extends Component {
       i += 1;
     }
     return (
-      <div className="container">      
-        <div className="Comments-full">
+      <div className="container-fluid">      
+        <div className="row">
           {commentItems}
         </div>
-        <form className="Comment-form" onSubmit={this.handleSubmit}>
-          <div className="form-group row">
-            <label className="col-sm-2 col-form-label text-right" htmlFor="inputComment">Comment</label>
-            <div className="col-sm-8">
-              <textarea value={this.state.viewerComment} className="form-control" id="inputComment" aria-describedby="commentHelp" placeholder="Enter comment" onChange={this.onChangeViewerComment} />
-            </div>
-          </div>
-          <div className="form-group row">
-            <label className="col-sm-2 col-form-label text-right" htmlFor="inputUser">User</label>
-            <div className="col-sm-6">
-              <input type="text" disabled={this.state.viewerIsAnon} value={this.state.viewerUser} className="form-control" id="inputUser" aria-describedby="userHelp" placeholder="Enter user" onChange={this.onChangeViewerUser} />
-              <div className="pl-4 float-left">
-                <input type="checkbox" className="form-check-input" id="anonCheck" checked={this.state.viewerIsAnon} onChange={this.toggleAnon} />
-                <label className="form-check-label" htmlFor="anonCheck">anonymous</label>
-              </div>
-            </div>
-            <div className="col-sm-2">
-              <button type="submit" className="btn btn-primary">Submit</button>
-            </div>
-          </div>
-        </form>
+        <hr className="row " />
+        <div className="row">
+          {this.state.paid? this.renderCommentSubmitForm() : null }
+        </div>
       </div>
     );
   }
