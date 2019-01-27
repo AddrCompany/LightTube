@@ -1,11 +1,11 @@
 .Upload-full {
-  color: black;
+  font-family: 'Roboto';
 }
 
 .Upload-header {
   text-align: center;
   font-size: calc(10px + 2vmin);
-  color: black;
+  font-family: 'Roboto';
 }
 
 .Upload-form {
