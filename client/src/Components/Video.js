@@ -3,8 +3,10 @@ import { connect } from 'react-redux';
 import { fetchVideo } from '../actions/videoActions'
 import { postComment } from '../actions/commentActions'
 import PropTypes from 'prop-types';
+import Modal from 'react-responsive-modal';
 
 import VideoPlayer from './VideoPlayer';
+import Paywall from './Paywall'
 
 import './Video.css';
 
@@ -12,11 +14,18 @@ class Video extends Component {
   state = {
     loading: true,
     paid: false,
+    openPaywallModal: false,
     viewerComment: "",
     viewerUser: "",
   };
 
   showPaywallModal = (event) => {
+    this.setState({
+      openPaywallModal: true
+    });
+  }
+
+  unlockVideo = () => {
     this.setState({
       paid: true
     })
@@ -60,6 +69,12 @@ class Video extends Component {
         viewerUser: ""
       });
     }
+  }
+
+  onClosePaywallModal = () => {
+    this.setState({
+      openPaywallModal: false
+    });
   }
 
   componentDidMount() {
@@ -137,7 +152,7 @@ class Video extends Component {
     );
   }
 
-  renderPaywall() {
+  renderBlocker() {
     const thumbnail = this.props.video.thumbnail;
     const title = this.props.video.title;
     return (
@@ -158,7 +173,17 @@ class Video extends Component {
     const value = videoAttrs.value.toFixed(2);
     return (
       <div>
-        {this.state.paid ? (<VideoPlayer url={video_url} />) : (this.renderPaywall()) }
+        <Modal
+          classNames={{
+            overlay: "Paywall-overlay",
+            modal: "Paywall-modal",
+          }}
+          open={this.state.openPaywallModal}
+          onClose={this.onClosePaywallModal}
+          center closeOnEsc closeOnOverlayClick>
+          <Paywall onClose={this.onCloseUploadModal} />
+        </Modal>
+        {this.state.paid ? (<VideoPlayer url={video_url} />) : (this.renderBlocker()) }
         <div className="Video-info">
           <div className="container-fluid">
             <div className="Video-title row">{title}</div>

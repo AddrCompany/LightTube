@@ -5,9 +5,6 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { BrowserRouter } from 'react-router-dom'
 
-// Be sure to include styles at some point, probably during your bootstraping
-import '@trendmicro/react-sidenav/dist/react-sidenav.css';
-
 ReactDOM.render(
     <BrowserRouter>
         <App />

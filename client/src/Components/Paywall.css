@@ -1,0 +1,51 @@
+.Paywall-full {
+  margin-left: 50px;
+  margin-right: 50px;
+}
+
+.Paywall-divider {
+  overflow: hidden;
+  text-align: center;
+  color: #777;
+}
+
+
+.Paywall-divider:before,
+.Paywall-divider:after {
+  background-color: #BBB;
+  content: "";
+  display: inline-block;
+  height: 1px;
+  position: relative;
+  vertical-align: middle;
+  width: 50%;
+}
+
+.Paywall-divider:before {
+  right: 0.5em;
+  margin-left: -50%;
+}
+
+.Paywall-divider:after {
+  left: 0.5em;
+  margin-right: -50%;
+}
+
+.Paywall-lightning {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.Paywall-lightningLogo {
+  color: #AAA;
+  font-size: 0.8em;
+}
+
+.Paywall-qr {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.Paywall-code {
+  margin-top: 30px;
+}

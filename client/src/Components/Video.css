@@ -83,3 +83,12 @@ hr {
   font-size: 0.8em;
   width: 100%;
 }
+
+.Paywall-overlay {
+  background: rgba(0,0,0,0.7);
+}
+
+.Paywall-modal {
+  margin-top: 50px;
+  background-color: white;
+}
