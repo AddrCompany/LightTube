@@ -49,11 +49,8 @@ interface ServingVideoThumbnail {
     video_id: number,
     title: string,
     user: string,
-    likes: number,
-    dislikes: number,
     views: number,
     thumbnail_url: string,
-    total_comments: number,
 }
 
 interface ServingVideos {
@@ -208,11 +205,8 @@ function toServingVideoThumbnail(video: VideoAttrs): ServingVideoThumbnail {
         video_id: video.id,
         title: video.title,
         user: video.user,
-        likes: video.likes,
-        dislikes: video.dislikes,
         views: video.views,
         thumbnail_url: (video.video_metadata ? video.video_metadata.img_url : "http://defaultnothumbnail"),
-        total_comments: video.comments.length
     }
 }
 
