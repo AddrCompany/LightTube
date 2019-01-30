@@ -96,6 +96,8 @@ router.post('/video/:id/comment', function(req: CommentPostRequest, res: ServerR
     .catch(err => res.status(500).send(err))
 });
 
+/* NOT ACTIVATED AT THE MOMENT
+
 router.post('/video/:id/like', function(req: ServerRequest, res: ServerResponse) {
     const videoId = parseInt(req.params.id);
     findVideo(videoId, req.models)
@@ -115,6 +117,7 @@ router.post('/video/:id/dislike', function(req: ServerRequest, res: ServerRespon
     .then(servableVideo => res.json(servableVideo))
     .catch(err => res.status(500).send(err))
 });
+*/
 
 router.post('/upload', function(req: UploadRequest, res: ServerResponse) {
     const videoFile: UploadedFile = req.files.file as UploadedFile;

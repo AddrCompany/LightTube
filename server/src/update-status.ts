@@ -71,10 +71,10 @@ export function completeUpdate(
     })
     .then(metadata => {
       if (metadata) {
-        metadata.set("cloudfront_dash_url", cloudFront)
-        .set("img_url", thumbnail).save()
+        metadata.set("cloudfrontDashUrl", cloudFront)
+        .set("imgUrl", thumbnail).save()
         .then(() => {
-          models.videos.findById(metadata.getDataValue("video_id"))
+          models.videos.findById(metadata.getDataValue("videoId"))
           .then(video => video.set("ready", true).save())
           .then(() => resolve(true))
           .catch(e => reject(e))
@@ -97,7 +97,7 @@ export function ingestUpdate(
     })
     .then(metadata => {
       if (metadata) {
-        metadata.set("transcoder_guid", guid)
+        metadata.set("transcoderGuid", guid)
         .save()
         .then(() => {
           resolve(true);
