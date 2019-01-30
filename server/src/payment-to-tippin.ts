@@ -45,6 +45,7 @@ function createInvoice(userDetails: UserDetails): Promise<Invoice> {
 }
 
 function isInvoiceSettled(invoice: Invoice): Promise<boolean> {
+  console.log(invoice);
   const params = new URLSearchParams();
   params.append('rhash', invoice.rhash)
   return fetch(lookupInvoiceUrl, {

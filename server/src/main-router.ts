@@ -72,8 +72,8 @@ router.get('/videos', function(req: ServerRequest, res: ServerResponse) {
 });
 
 router.get('/video/:id', function(req: ServerRequest, res: ServerResponse) {
-    const video_id = parseInt(req.params.id);
-    findVideo(video_id, req.models)
+    const videoId = parseInt(req.params.id);
+    findVideo(videoId, req.models)
     .then(video => video.increment("views"))
     .then(updatedVideo => updatedVideo.get())
     .then(videoAttrs => toServingVideo(videoAttrs))
@@ -82,11 +82,11 @@ router.get('/video/:id', function(req: ServerRequest, res: ServerResponse) {
 });
 
 router.post('/video/:id/comment', function(req: CommentPostRequest, res: ServerResponse) {
-    const video_id = parseInt(req.params.id);
+    const videoId = parseInt(req.params.id);
     const content = req.body.comment;
     const user = req.body.user;
     const commentParams: CommentAttrs = {
-        video_id: video_id,
+        videoId: videoId,
         comment: content,
         user: user
     };
@@ -97,8 +97,8 @@ router.post('/video/:id/comment', function(req: CommentPostRequest, res: ServerR
 });
 
 router.post('/video/:id/like', function(req: ServerRequest, res: ServerResponse) {
-    const video_id = parseInt(req.params.id);
-    findVideo(video_id, req.models)
+    const videoId = parseInt(req.params.id);
+    findVideo(videoId, req.models)
     .then(video => video.increment("likes"))
     .then(updatedVideo => updatedVideo.get())
     .then(videoAttrs => toServingVideo(videoAttrs))
@@ -107,8 +107,8 @@ router.post('/video/:id/like', function(req: ServerRequest, res: ServerResponse)
 });
 
 router.post('/video/:id/dislike', function(req: ServerRequest, res: ServerResponse) {
-    const video_id = parseInt(req.params.id);
-    findVideo(video_id, req.models)
+    const videoId = parseInt(req.params.id);
+    findVideo(videoId, req.models)
     .then(video => video.increment("dislikes"))
     .then(updatedVideo => updatedVideo.get())
     .then(videoAttrs => toServingVideo(videoAttrs))
@@ -153,8 +153,8 @@ function persistNewVideo(
     return models.videos.create(videoParams)
     .then(video => {
         const metadata: VideoMetadataAttrs = {
-            video_id: video.get().id,
-            local_file_name: fileName
+            videoId: video.get().id,
+            localFileName: fileName
         }
         return models.videosMetadata.create(metadata)
         .then(() => video);
@@ -169,7 +169,7 @@ function findAllReadyVideos(models: Models): Promise<Video[]> {
         include: [
             {
                 model: models.videosMetadata,
-                as: "video_metadata"
+                as: "videoMetadata"
             },
             {
                 model: models.comments,
@@ -184,7 +184,7 @@ function findVideo(primaryKey: number, models: Models): Promise<Video> {
         include: [
             {
                 model: models.videosMetadata,
-                as: "video_metadata"
+                as: "videoMetadata"
             },
             {
                 model: models.comments,
@@ -206,7 +206,7 @@ function toServingVideoThumbnail(video: VideoAttrs): ServingVideoThumbnail {
         title: video.title,
         user: video.user,
         views: video.views,
-        thumbnail_url: (video.video_metadata ? video.video_metadata.img_url : "http://defaultnothumbnail"),
+        thumbnail_url: (video.videoMetadata ? video.videoMetadata.imgUrl : "http://defaultnothumbnail"),
     }
 }
 
@@ -219,8 +219,8 @@ function toServingVideo(video: VideoAttrs): ServingVideo {
         likes: video.likes,
         dislikes: video.dislikes,
         views: video.views,
-        thumbnail_url: (video.video_metadata ? video.video_metadata.img_url : "http://defaultnothumbnail"),
-        video_url: (video.video_metadata ? video.video_metadata.cloudfront_dash_url : "http://videonotavailable"),
+        thumbnail_url: (video.videoMetadata ? video.videoMetadata.imgUrl : "http://defaultnothumbnail"),
+        video_url: (video.videoMetadata ? video.videoMetadata.cloudfrontDashUrl : "http://videonotavailable"),
         comments: video.comments.map(comment => toServingComment(comment)),
     }
 }
