@@ -1,5 +1,5 @@
 import React from 'react';
-import dashjs from 'dashjs';
+import ReactHLS from 'react-hls';
 
 import './VideoPlayer.css';
 
@@ -9,15 +9,9 @@ import videojs from 'video.js';
 */
 
 export default class VideoPlayer extends React.Component {
-  componentDidMount() {
-    const url = this.props.url;
-    this.player = dashjs.MediaPlayer().create();
-    this.player.initialize(this.videoNode, url, false);
-  }
-
   render() {
     return (
-      <video width="852" height="480" controls ref={ node => this.videoNode = node } className="Video-viewer"></video>    
+      <ReactHLS url={this.props.url} width="852" height="480" className="Video-viewer"></ReactHLS>    
     )
   }
 }

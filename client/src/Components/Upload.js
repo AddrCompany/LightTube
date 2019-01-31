@@ -83,7 +83,7 @@ class Upload extends Component {
   }
 
   render() {
-    let percentage = this.props.progress;
+    let percentage = this.props.progress || 0;
     let loader = (
       <div style={{ width: "100px", margin: "0 auto" }}>
         <CircularProgressbar percentage={percentage} text={`${percentage}%`} />

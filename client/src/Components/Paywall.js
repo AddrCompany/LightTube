@@ -53,7 +53,7 @@ export default class Paywall extends Component {
           <div className="Paywall-qr">
             <QRCode value={test} />
           </div>
-          <div className="Paywall-lightningLogo">powered by lightning network<span role="img" aria-label="bolt">⚡</span></div>
+          <div className="Paywall-lightningLogo">powered by OpenNode<span role="img" aria-label="bolt">⚡</span></div>
         </div>
         <div className="Paywall-divider">OR</div>
         {this.renderPasscode()}

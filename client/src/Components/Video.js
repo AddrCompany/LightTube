@@ -13,7 +13,7 @@ import './Video.css';
 class Video extends Component {
   state = {
     loading: true,
-    paid: false,
+    paid: true,
     openPaywallModal: false,
     viewerComment: "",
     viewerUser: "",
@@ -165,6 +165,7 @@ class Video extends Component {
 
   renderVideo() {
     const videoAttrs = this.props.video;
+    console.log(videoAttrs);
     const title = videoAttrs.title;
     const video_url = videoAttrs.video_url;
     const uploader = videoAttrs.uploader;

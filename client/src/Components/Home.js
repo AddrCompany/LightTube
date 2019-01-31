@@ -62,7 +62,7 @@ class Home extends Component {
     while (rowIndex < totalRows) {
       let row = this.currentRow(i);
       allVideoRows.push(
-        <div className="row" key={'row'+rowIndex}>
+        <div className="row Videos-row" key={'row'+rowIndex}>
           {row}
         </div>
       );
