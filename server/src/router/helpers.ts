@@ -123,5 +123,5 @@ export function toServingComment(comment: CommentAttrs): ServingComment {
 
 export function verifyCorrectUnlockCode(videoId: number, code: string, models: Models): Promise<boolean> {
   return models.videos.findById(videoId)
-  .then(video => video.get().unlockCode === code)
+  .then(video => (!video.get().unlockCode || video.get().unlockCode === code))
 }

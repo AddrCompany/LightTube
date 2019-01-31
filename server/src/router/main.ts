@@ -31,13 +31,14 @@ router.get('/video/:id', function(req: ServerRequest, res: ServerResponse) {
     .catch(err => res.status(500).send(err))
 });
 
-router.get('/video/:id/verify', function(req: UnlockCodeRequest, res: ServerResponse) {
+router.post('/video/:id/verify', function(req: UnlockCodeRequest, res: ServerResponse) {
     const videoId = parseInt(req.params.id);
     verifyCorrectUnlockCode(videoId, req.body.code, req.models)
     .then(correct => {
         if (correct) {
             findVideo(videoId, req.models)
-            .then(video => res.json({url: video.get().videoMetadata.hlsUrl}))
+            .then(video => video.increment("views"))
+            .then(updatedVideo => res.json({url: updatedVideo.get().videoMetadata.hlsUrl}))
         } else {
             res.status(403).json({error: "Wrong code entered"})
         }
