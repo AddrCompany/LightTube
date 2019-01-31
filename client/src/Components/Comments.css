@@ -1,0 +1,20 @@
+.Comment-box {
+  width: 100%;
+}
+
+.Comment-user {
+  font-size: 0.8em;
+  font-family: sans-serif;
+  font-weight: bold;
+}
+
+.Comment-content {
+  font-size: 0.9em;
+  font-family: sans-serif;
+  margin-bottom: 5px;
+}
+
+.Comment-form {
+  font-size: 0.8em;
+  width: 100%;
+}

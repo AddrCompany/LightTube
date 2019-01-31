@@ -1,22 +1,19 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { fetchVideo, enterCode } from '../actions/videoActions'
-import { postComment } from '../actions/commentActions'
 import PropTypes from 'prop-types';
 import Modal from 'react-responsive-modal';
 
 import VideoPlayer from './VideoPlayer';
 import Paywall from './Paywall'
+import Comments from './Comments';
 
 import './Video.css';
 
 class Video extends Component {
   state = {
     loading: true,
-    paid: false,
-    openPaywallModal: false,
-    viewerComment: "",
-    viewerUser: "",
+    openPaywallModal: false
   };
 
   showPaywallModal = (event) => {
@@ -27,46 +24,6 @@ class Video extends Component {
 
   unlockVideo = (code) => {
     this.props.enterCode(this.props.video.video_id, code);
-  }
-
-  onChangeViewerComment = (event) => {
-    let value = event.target.value;
-    this.setState({
-      viewerComment: value
-    });
-  }
-
-  onChangeViewerUser = (event) => {
-    let value = event.target.value;
-    this.setState({
-      viewerUser: value
-    });
-  }
-
-  validateFields = () => {
-    const comment = this.state.viewerComment;
-    const user = this.state.viewerUser;
-    if (comment === "") {
-      alert("Comment can not be empty");
-      return false;
-    }
-    if (user === "") {
-      alert("User can not be empty");
-      return false
-    }
-    return true;
-  }
-
-  handleSubmit = (event) => {
-    event.preventDefault();
-    let valid = this.validateFields();
-    if (valid) {
-      this.props.postComment(this.props.video.video_id, this.state.viewerComment, this.state.viewerUser)
-      this.setState({
-        viewerComment: "",
-        viewerUser: ""
-      });
-    }
   }
 
   onClosePaywallModal = () => {
@@ -87,70 +44,13 @@ class Video extends Component {
       this.setState({ loading: false });
     }
     if (nextProps.video_url) {
-      this.setState({ paid: true, openPaywallModal: false });
-    }
-    if (nextProps.newComment) {
-      this.props.video.comments.push(nextProps.newComment);
+      this.setState({ openPaywallModal: false });
     }
   }
 
   renderLoading() {
     return (
       <div><p>Loading</p></div>
-    );
-  }
-
-  renderCommentSubmitForm() {
-    return (
-      <form className="Comment-form" onSubmit={this.handleSubmit}>
-        <div className="form-group row">
-          <label className="col-sm-2 col-form-label text-right" htmlFor="inputComment">Comment</label>
-          <div className="col-sm-6">
-            <textarea value={this.state.viewerComment} className="form-control form-control-sm" id="inputComment" aria-describedby="commentHelp" placeholder="Enter comment" onChange={this.onChangeViewerComment} />
-          </div>
-        </div>
-        <div className="form-group row">
-          <label className="col-sm-2 col-form-label text-right" htmlFor="inputUser">User</label>
-          <div className="col-sm-6">
-            <input type="text" value={this.state.viewerUser} className="form-control form-control-sm" id="inputUser" aria-describedby="userHelp" placeholder="Enter user" onChange={this.onChangeViewerUser} />
-          </div>
-        </div>
-        <div className="row">
-          <div className="col-sm-2"></div>
-          <div className="col-sm-2">
-            <button type="submit" className="btn btn-primary btn-sm">Submit</button>
-          </div>
-        </div>
-      </form>
-    );
-  }
-
-  renderComments() {
-    const allComments = this.props.video.comments;
-    let commentItems = [];
-    if (allComments.length === 0) {
-      commentItems.push(<div key={0} className="font-italic Comment-content">No comments</div>)
-    }
-    let i = 0;
-    while (i < allComments.length) {
-      commentItems.push(
-        <div className="Comment-box" key={"comment" + i}>
-          <div className="Comment-user">{allComments[i].user}</div>
-          <div className="Comment-content">{allComments[i].content}</div>
-        </div>
-      );
-      i += 1;
-    }
-    return (
-      <div className="container-fluid">      
-        <div className="row">
-          {commentItems}
-        </div>
-        <hr className="row " />
-        <div className="row">
-          {this.state.paid? this.renderCommentSubmitForm() : null }
-        </div>
-      </div>
     );
   }
 
@@ -184,7 +84,7 @@ class Video extends Component {
           center closeOnEsc closeOnOverlayClick>
           <Paywall onClose={this.onCloseUploadModal} unlockVideo={this.unlockVideo} />
         </Modal>
-        {this.state.paid ? (<VideoPlayer url={this.props.video_url} />) : (this.renderBlocker()) }
+        {this.props.paid ? (<VideoPlayer url={this.props.video_url} />) : (this.renderBlocker()) }
         <div className="Video-info">
           <div className="container-fluid">
             <div className="Video-title row">{title}</div>
@@ -207,7 +107,7 @@ class Video extends Component {
             <div className="Video-description row">{description}</div>
             <hr className="row"/>
           </div>
-          {this.renderComments()}
+          <Comments comments={this.props.video.comments} video_id={this.props.video.video_id} paid={this.props.paid} />
         </div>
       </div>
     );
@@ -225,14 +125,13 @@ class Video extends Component {
 Video.propTypes = {
   fetchVideo: PropTypes.func.isRequired,
   enterCode: PropTypes.func.isRequired,
-  postComment: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
   video: state.videos.item,
   video_url: state.videos.url,
-  newComment: state.comment.item,
+  paid: state.videos.paid,
   errorCode: state.videos.error
 })
 
-export default connect(mapStateToProps, { fetchVideo, postComment, enterCode })(Video);
+export default connect(mapStateToProps, { fetchVideo, enterCode })(Video);
