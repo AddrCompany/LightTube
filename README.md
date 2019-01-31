@@ -2,12 +2,15 @@
 
 Platform for supporting micropayments for media content.
 
-There are three components of LightTube
+Main components of LightTube
 
-### Video-transcoding
+### Transcoding
 
-This component containts scripts that take care of the transcoding infrastructure on AWS. It runs independently of the server and the server has to communicate with the transcoding service itself. Currently, the way to do that is via SQS. Transcoding-service publishes updates via SNS and those are picked up by the SQS services. Message in the queue are then polled by the backend server to know the state of the service and update its values correspondingly. Transcoding service also stores its state in DynamoDB, which can be queried by the server. Refer to the transcoding README, for more details.
+Relies on MUX
 
+### Payments
+
+Relies on OpenNode for charging customers and Tippin for creators
 
 ### LightTube Server
 
