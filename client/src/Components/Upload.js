@@ -13,6 +13,7 @@ class Upload extends Component {
     title: "",
     description: "",
     user: "",
+    unlockCode: "",
     file: null,
     loaded: 0,
     loading: false
@@ -36,6 +37,13 @@ class Upload extends Component {
     let value = event.target.value;
     this.setState({
       user: value
+    });
+  }
+
+  onChangeUnlockCode = (event) => {
+    let value = event.target.value;
+    this.setState({
+      unlockCode: value
     });
   }
 
@@ -68,7 +76,7 @@ class Upload extends Component {
     event.preventDefault();
     let valid = this.validateFields();
     if (valid) {
-      this.props.uploadVideo(this.state.file, this.state.title, this.state.description, this.state.user);
+      this.props.uploadVideo(this.state.file, this.state.title, this.state.description, this.state.user, this.state.unlockCode);
       this.setState({
         loading: true
       });
@@ -120,6 +128,12 @@ class Upload extends Component {
                 <small id="uploadHelp" className="form-text text-muted text-left">We currently only accept the following file extensions: .mp4, .mpg, .m4v, .m2ts or .mov</small>
                 <label className="custom-file-label" htmlFor="customFile">{this.state.fileLabel}</label>
               </div>
+            </div>
+          </div>
+          <div className="form-group row">
+            <label className="col-sm-3 col-form-label text-right" htmlFor="inputUnlockCode">Unlock code</label>
+            <div className="col-sm-8">
+              <input value={this.state.unlockCode} type="text" className="form-control" id="inputUnlockCode" aria-describedby="codeHelp" placeholder="Enter code to unlock video" onChange={this.onChangeUnlockCode} />
             </div>
           </div>
           <div className="row">

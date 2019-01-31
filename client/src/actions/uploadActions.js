@@ -1,13 +1,14 @@
 import { POST_UPLOAD } from './types';
 import axios from 'axios';
 
-export const uploadVideo = (file, title, description, user) => dispatch => {
+export const uploadVideo = (file, title, description, user, unlockCode) => dispatch => {
   const endpoint = "http://localhost:8001/upload";
   const data = new FormData();
   data.append('file', file);
   data.append('title', title);
   data.append('description', description);
   data.append('user', user);
+  data.append('unlockCode', unlockCode)
   return axios.post(endpoint, data, {
     onUploadProgress: ProgressEvent => dispatch({
         type: POST_UPLOAD,

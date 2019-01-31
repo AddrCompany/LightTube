@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { fetchVideo } from '../actions/videoActions'
+import { fetchVideo, enterCode } from '../actions/videoActions'
 import { postComment } from '../actions/commentActions'
 import PropTypes from 'prop-types';
 import Modal from 'react-responsive-modal';
@@ -13,7 +13,7 @@ import './Video.css';
 class Video extends Component {
   state = {
     loading: true,
-    paid: true,
+    paid: false,
     openPaywallModal: false,
     viewerComment: "",
     viewerUser: "",
@@ -25,10 +25,8 @@ class Video extends Component {
     });
   }
 
-  unlockVideo = () => {
-    this.setState({
-      paid: true
-    })
+  unlockVideo = (code) => {
+    this.props.enterCode(this.props.video.video_id, code);
   }
 
   onChangeViewerComment = (event) => {
@@ -82,10 +80,14 @@ class Video extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    if (nextProps.errorCode && this.state.openPaywallModal) {
+      alert(nextProps.errorCode);
+    } 
     if (nextProps.video) {
-      this.setState({
-        loading: false
-      })
+      this.setState({ loading: false });
+    }
+    if (nextProps.video_url) {
+      this.setState({ paid: true, openPaywallModal: false });
     }
     if (nextProps.newComment) {
       this.props.video.comments.push(nextProps.newComment);
@@ -165,9 +167,7 @@ class Video extends Component {
 
   renderVideo() {
     const videoAttrs = this.props.video;
-    console.log(videoAttrs);
     const title = videoAttrs.title;
-    const video_url = videoAttrs.video_url;
     const uploader = videoAttrs.uploader;
     const description = videoAttrs.description;
     const views = videoAttrs.views;
@@ -182,9 +182,9 @@ class Video extends Component {
           open={this.state.openPaywallModal}
           onClose={this.onClosePaywallModal}
           center closeOnEsc closeOnOverlayClick>
-          <Paywall onClose={this.onCloseUploadModal} />
+          <Paywall onClose={this.onCloseUploadModal} unlockVideo={this.unlockVideo} />
         </Modal>
-        {this.state.paid ? (<VideoPlayer url={video_url} />) : (this.renderBlocker()) }
+        {this.state.paid ? (<VideoPlayer url={this.props.video_url} />) : (this.renderBlocker()) }
         <div className="Video-info">
           <div className="container-fluid">
             <div className="Video-title row">{title}</div>
@@ -224,11 +224,15 @@ class Video extends Component {
 
 Video.propTypes = {
   fetchVideo: PropTypes.func.isRequired,
+  enterCode: PropTypes.func.isRequired,
+  postComment: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
   video: state.videos.item,
-  newComment: state.comment.item
+  video_url: state.videos.url,
+  newComment: state.comment.item,
+  errorCode: state.videos.error
 })
 
-export default connect(mapStateToProps, { fetchVideo, postComment })(Video);
+export default connect(mapStateToProps, { fetchVideo, postComment, enterCode })(Video);

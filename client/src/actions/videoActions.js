@@ -1,4 +1,5 @@
-import { FETCH_VIDEOS, FETCH_VIDEO } from './types';
+import axios from 'axios';
+import { FETCH_VIDEOS, FETCH_VIDEO, VERIFY_CODE_FAIL, VERIFY_CODE_SUCCESSFUL } from './types';
 
 function loadAllVideos() {
 	const endpoint = "http://localhost:8001/videos";
@@ -60,4 +61,19 @@ export const fetchVideo = (id) => dispatch => {
 		type: FETCH_VIDEO,
 		payload: displayVideo
 	}))
+}
+
+export const enterCode = (id, code) => dispatch => {
+	const endpoint = "http://localhost:8001/video/" + id + "/verify";
+  const data = new FormData();
+  data.append('code', code);
+  axios.post(endpoint, data)
+  .then(response => dispatch({
+		type: VERIFY_CODE_SUCCESSFUL,
+		payload: response.data.url
+	}))
+	.catch(e => dispatch({
+		type: VERIFY_CODE_FAIL,
+		payload: "Wrong code entered"
+	}));
 }

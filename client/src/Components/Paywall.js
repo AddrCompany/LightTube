@@ -17,6 +17,10 @@ export default class Paywall extends Component {
 
   handleSubmit = (event) => {
     event.preventDefault();
+    this.props.unlockVideo(this.state.code);
+    this.setState({
+      code: ""
+    });
   }
 
   renderPasscode() {
