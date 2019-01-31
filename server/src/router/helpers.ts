@@ -21,7 +21,8 @@ export function storeVideoFileLocally(videoFile: UploadedFile, uploadRequest: Up
         const videoParams: VideoAttrs = {
           title: uploadRequest.title,
           description: uploadRequest.description,
-          user: uploadRequest.user
+          user: uploadRequest.user,
+          unlockCode: uploadRequest.unlock_code
         };
         persistNewVideo(videoParams, models, fullVideoFileName)
         .then(video => resolve(video.get().id));

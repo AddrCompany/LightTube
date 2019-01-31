@@ -8,7 +8,7 @@ export const uploadVideo = (file, title, description, user, unlockCode) => dispa
   data.append('title', title);
   data.append('description', description);
   data.append('user', user);
-  data.append('unlockCode', unlockCode)
+  data.append('unlock_code', unlockCode)
   return axios.post(endpoint, data, {
     onUploadProgress: ProgressEvent => dispatch({
         type: POST_UPLOAD,

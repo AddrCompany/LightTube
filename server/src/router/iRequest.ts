@@ -9,7 +9,8 @@ export interface ServerRequest extends express.Request {
 export interface UploadRequestBody {
   title: string,
   description: string,
-  user: string
+  user: string,
+  unlock_code: string
 }
 
 export interface UploadRequest extends ServerRequest {
