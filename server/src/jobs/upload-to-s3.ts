@@ -63,7 +63,7 @@ function uploadToBucket(key: string, data: Buffer): Promise<AWS.S3.ManagedUpload
     Bucket: SOURCE_BUCKET_NAME,
     Key: key,
     Body: data,
-    ACL: 'private',
+    ACL: 'public-read',
     ContentEncoding: 'base64'
   };
   return Promise.resolve(s3.upload(uploadParams).promise());

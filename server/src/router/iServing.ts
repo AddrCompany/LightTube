@@ -18,7 +18,8 @@ export interface ServingVideo {
   price_usd: number,
   thumbnail_url: string,
   comments: ServingComment[],
-  created_at: Date
+  created_at: Date,
+  video_url: string // temporary
 }
 
 export interface ServingVideoThumbnail {

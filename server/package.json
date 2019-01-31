@@ -6,6 +6,8 @@
   "scripts": {
     "start": "tsc && nodemon dist/server.js",
     "upload": "tsc && node dist/jobs/upload-to-s3.js",
+    "publish": "tsc && node dist/jobs/publish-to-mux.js",
+    "poll": "tsc && node dist/jobs/poll-mux.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Uneeb Agha",

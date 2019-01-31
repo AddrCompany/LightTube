@@ -51,7 +51,13 @@ function getAllAssetsInQueue(): Promise<VideoMetadata[]> {
   return models.videosMetadata.findAll({
     where: {
       latestStatus: "muxIngest"
-    }
+    },
+    include: [
+      {
+        model: models.videos,
+        as: "video"
+      }
+    ]
   })
 }
 
@@ -103,5 +109,5 @@ function run() {
   });
 }
 
-console.log("Initiating upload to MUX...")
+console.log("Initiating poll from MUX...")
 setTimeout(run, JOB_FREQUENCY);

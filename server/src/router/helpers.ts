@@ -108,7 +108,8 @@ export function toServingVideo(video: VideoAttrs): ServingVideo {
       price_usd: video.priceUSD,
       thumbnail_url: video.videoMetadata.thumbnailUrl,
       comments: video.comments.map(comment => toServingComment(comment)),
-      created_at: video.createdAt
+      created_at: video.createdAt,
+      video_url: video.videoMetadata.hlsUrl // temporary
   }
 }
 
