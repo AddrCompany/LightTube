@@ -14,7 +14,7 @@ Relies on OpenNode for charging customers and Tippin for creators
 
 ### LightTube Server
 
-LightTube server is an ExpressJS application that queries the transcoding service and provides an API to interface with the client. As mentioned earlier, it does that by constantly polling SQS for new notifications. There are also two jobs that runs alongwith ExpressJS: the job for listening to SQS and the job to upload fresh video to S3 (where it would be picked up by the transcoding service). Please refer to the server README, to learn more about the architecture and how to set it up.
+LightTube server is an ExpressJS application with postgres database. It is composed to an HTTP interface to interact with the client - providing content and it interfaces with OpenNode, Tippin.me and MUX in the form of forever running jobs or server invoking logic.
 
 ### LightTube Client
 
