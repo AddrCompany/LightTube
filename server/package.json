@@ -6,7 +6,6 @@
   "scripts": {
     "start": "tsc && nodemon dist/server.js",
     "upload": "tsc && node dist/jobs/upload-to-s3.js",
-    "transcode": "tsc && node dist/jobs/listen-to-sqs.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Uneeb Agha",
@@ -15,6 +14,7 @@
     "@types/aws-sdk": "^2.7.0",
     "@types/bluebird": "^3.5.25",
     "aws-sdk": "^2.389.0",
+    "base-64": "^0.1.0",
     "bluebird": "^3.5.3",
     "body-parser": "^1.18.3",
     "cookie-parser": "^1.4.3",
@@ -30,6 +30,7 @@
     "uuid": "^3.3.2"
   },
   "devDependencies": {
+    "@types/base-64": "^0.1.2",
     "@types/body-parser": "^1.17.0",
     "@types/cookie-parser": "^1.4.1",
     "@types/cors": "^2.8.4",

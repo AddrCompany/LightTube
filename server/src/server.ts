@@ -10,7 +10,9 @@ import * as cookieParser from 'cookie-parser';
 import * as fileUpload from 'express-fileupload';
 
 import { instantiateModels } from './model';
-import { ServerRequest, ServerResponse, mainRouter } from './main-router';
+import { mainRouter } from './router/main';
+import { ServerResponse } from './router/iServing';
+import { ServerRequest } from './router/iRequest';
 
 const PORT = process.env.PORT || 8001;
 

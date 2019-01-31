@@ -4,7 +4,7 @@ require('dotenv').config({ path: path.resolve(process.cwd(), '.env') })
 import * as Promise from 'bluebird';
 import * as AWS from 'aws-sdk';
 import { readFile, readdir, unlink } from 'fs';
-import { instantiateModels } from '../model';
+import { instantiateModels, VideoMetadata } from '../model';
 import * as sequelize from 'sequelize';
 
 const JOB_FREQUENCY = 1000 * 10; // every 10 seconds
@@ -57,22 +57,28 @@ function readVideo(fileName: string): Promise<Buffer> {
   });
 }
 
-function uploadToBucket(fileName, data): Promise<AWS.S3.ManagedUpload.SendData> {
+function uploadToBucket(key: string, data: Buffer): Promise<AWS.S3.ManagedUpload.SendData> {
   const s3 = new AWS.S3();
   const uploadParams: AWS.S3.PutObjectRequest = {
     Bucket: SOURCE_BUCKET_NAME,
-    Key: fileName,
+    Key: key,
     Body: data,
     ACL: 'private',
     ContentEncoding: 'base64'
   };
-  return new Promise((resolve, reject) => {
-    s3.upload(uploadParams, function (err, data) {
-      if (err) {
-        reject(err);
-      }
-      resolve(data);
-    });
+  return Promise.resolve(s3.upload(uploadParams).promise());
+}
+
+function storeS3Source(fileName: string, data: AWS.S3.ManagedUpload.SendData): Promise<VideoMetadata> {
+  return models.videosMetadata.findOne({
+    where: {
+      localFileName: fileName
+    }
+  })
+  .then(metadata => {
+    return metadata.set("sourceVideoUrl", data.Location)
+      .set("latestStatus", "s3")
+      .save()
   });
 }
 
@@ -91,24 +97,21 @@ export function uploadAllFilesAndCleanUp(): Promise<void[]> {
   return Promise.map(getAllFileNames(), fileName => 
     readVideo(UPLOAD_PATH + "/" + fileName)
     .then(data => uploadToBucket(fileName, data))
-    .then(() =>
-      models.videosMetadata.findOne({
-        where: {
-          local_file_name: fileName
-        }
-      })
-    )
+    .then(sendData => storeS3Source(fileName, sendData))
     .then(() => deleteFile(fileName))
   );
 }
 
 function run() {
-  console.log("Initiating upload...")
   uploadAllFilesAndCleanUp()
   .then(() => {
-    console.log("Upload complete");
+    setTimeout(run, JOB_FREQUENCY);
+  })
+  .catch(e => {
+    console.error(e);
     setTimeout(run, JOB_FREQUENCY);
   });
 }
 
+console.log("Initiating upload to S3...")
 setTimeout(run, JOB_FREQUENCY);

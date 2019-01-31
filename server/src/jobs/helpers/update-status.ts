@@ -1,6 +1,10 @@
+// DEPRECATED
+
+/*
+
 import * as AWS from 'aws-sdk';
 import * as Promise from 'bluebird';
-import { Models, VideoMetadata } from './model';
+import { Models, VideoMetadata } from '../model';
 
 AWS.config.update({region: 'us-east-1'});
 
@@ -108,3 +112,5 @@ export function ingestUpdate(
     });
   });
 }
+
+*/

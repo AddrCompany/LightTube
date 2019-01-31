@@ -8,7 +8,6 @@ const videoDataTypes = {
     likes: { type: sequelize.INTEGER, defaultValue: 0, allowNull: false },
     dislikes: { type: sequelize.INTEGER, defaultValue: 0, allowNull: false },
     views: { type: sequelize.INTEGER, defaultValue: 0, allowNull: false },
-    ready: { type: sequelize.BOOLEAN,  defaultValue: false },
     tippinUser: { type: sequelize.STRING },
     priceUSD: { type: sequelize.FLOAT },
     unlockCode: { type: sequelize.STRING }, // validation missing here
@@ -29,9 +28,14 @@ const videoMetadataDataTypes = {
     id: { type: sequelize.INTEGER, primaryKey: true, autoIncrement: true },
     videoId: { type: sequelize.INTEGER, allowNull: false },
     localFileName: { type: sequelize.STRING, allowNull: false },
-    transcoderGuid: { type: sequelize.UUID }, // also means S3 upload done/local file cleaned up
-    imgUrl: { type: sequelize.STRING },
-    cloudfrontDashUrl: { type: sequelize.STRING },
+    sourceVideoUrl: { type: sequelize.STRING },
+    muxAssetId: { type: sequelize.STRING },
+    muxPlaybackId: { type: sequelize.STRING },
+    duration: { type: sequelize.FLOAT },
+    thumbnailUrl: { type: sequelize.STRING },
+    gifUrl: { type: sequelize.STRING },
+    hlsUrl: { type: sequelize.STRING },
+    latestStatus: { type: sequelize.STRING },
     createdAt: { type: sequelize.DATE },
     updatedAt: { type: sequelize.DATE },
 }
@@ -41,7 +45,7 @@ const payInDataTypes = {
     videoId: { type: sequelize.INTEGER, allowNull: false },
     amountSatoshi: { type: sequelize.INTEGER, allowNull: false },
     invoice: { type: sequelize.STRING, allowNull: false },
-    settled_at: { type: sequelize.DATE },
+    settledAt: { type: sequelize.DATE },
     createdAt: { type: sequelize.DATE },
     updatedAt: { type: sequelize.DATE },
 }
@@ -51,7 +55,7 @@ const payOutDataTypes = {
     videoId: { type: sequelize.INTEGER, allowNull: false },
     amountSatoshi: { type: sequelize.INTEGER, allowNull: false },
     invoice: { type: sequelize.STRING, allowNull: false },
-    settled_at: { type: sequelize.DATE },
+    settledAt: { type: sequelize.DATE },
     createdAt: { type: sequelize.DATE },
     updatedAt: { type: sequelize.DATE },
 }
@@ -90,9 +94,14 @@ export interface VideoMetadataAttrs {
     id?: number,
     videoId?: number,
     localFileName?: string,
-    transcoderGuid?: string,
-    imgUrl?: string,
-    cloudfrontDashUrl?: string,
+    sourceVideoUrl?: string,
+    muxPlaybackId?: string,
+    muxAssetId?: string,
+    duration?: number,
+    thumbnailUrl?: string,
+    gifUrl?: string,
+    hlsUrl?: string,
+    latestStatus?: "local" | "s3" | "muxIngest" | "ready",
     video?: VideoAttrs,
     createdAt?: Date,
     updatedAt?: Date,
@@ -103,7 +112,7 @@ export interface PayInAttrs {
     videoId?: number,
     amountSatoshi?: number,
     invoice?: string,
-    settled_at?: Date,
+    settledAt?: Date,
     createdAt?: Date,
     updatedAt?: Date,
 }
@@ -113,7 +122,7 @@ export interface PayOutAttrs {
     videoId?: number,
     amountSatoshi?: number,
     invoice?: string,
-    settled_at?: Date,
+    settledAt?: Date,
     createdAt?: Date,
     updatedAt?: Date,
 }
@@ -152,6 +161,7 @@ export function instantiateModels(sequelizeInstance: sequelize.Sequelize): Model
     comments.belongsTo(videos, { foreignKey: 'videoId', as: 'video'} );
     // videos-metadata association
     videos.hasOne(videosMetadata, { foreignKey: 'videoId', as: 'videoMetadata' });
+    videosMetadata.belongsTo(videos, { foreignKey: 'videoId', as: 'video'} );
     // videos-payIns/payOuts association
     videos.hasMany(payIns, { foreignKey: 'videoId', as: 'payIns' });
     payIns.belongsTo(videos, { foreignKey: 'videoId', as: 'video' });

@@ -1,3 +1,7 @@
+// DEPRECATED
+
+/*
+
 import * as path from 'path';
 require('dotenv').config({ path: path.resolve(process.cwd(), '.env') })
 
@@ -5,7 +9,7 @@ import * as Promise from 'bluebird';
 import * as AWS from 'aws-sdk';
 import { instantiateModels, VideoMetadata } from '../model';
 import * as sequelize from 'sequelize';
-import { ingestUpdate, completeUpdate } from '../update-status';
+import { ingestUpdate, completeUpdate } from './update-status';
 
 const JOB_FREQUENCY = 1000 * 10; // every 10 seconds
 
@@ -195,3 +199,5 @@ function run() {
 }
 
 setTimeout(run, JOB_FREQUENCY);
+
+*/
