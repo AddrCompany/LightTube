@@ -4,8 +4,9 @@ import { UploadedFile } from "express-fileupload";
 
 import { ServingVideos, ServingVideoThumbnail, ServingVideo, ServingComment } from "./iServing";
 
-import { VideoAttrs, Video, VideoMetadataAttrs, CommentAttrs, Models } from "../model";
+import { VideoAttrs, Video, VideoMetadataAttrs, CommentAttrs, Models, PayInAttrs, PayIn } from "../model";
 import { UploadRequestBody } from "./iRequest";
+import { OpenNodeInvoice } from "./payments";
 
 export function storeVideoFileLocally(videoFile: UploadedFile, uploadRequest: UploadRequestBody, models: Models): Promise<number> {
   return new Promise((resolve, reject) => {
@@ -125,4 +126,15 @@ export function toServingComment(comment: CommentAttrs): ServingComment {
 export function verifyCorrectUnlockCode(videoId: number, code: string, models: Models): Promise<boolean> {
   return models.videos.findById(videoId)
   .then(video => (!video.get().unlockCode || video.get().unlockCode === code))
+}
+
+export function persistInvoice(videoId: number, invoice: OpenNodeInvoice, models: Models): Promise<PayIn> {
+  const values: PayInAttrs = {
+    chargeId: invoice.data.id,
+    videoId: videoId,
+    amountSatoshi: invoice.data.amount,
+    payreq: invoice.data.lightning_invoice.payreq,
+    paid: false,
+  }
+  return models.payIns.create(values);
 }

@@ -41,11 +41,11 @@ const videoMetadataDataTypes = {
 }
 
 const payInDataTypes = {
-    id: { type: sequelize.INTEGER, primaryKey: true, autoIncrement: true },
+    chargeId: { type: sequelize.STRING, primaryKey: true },
     videoId: { type: sequelize.INTEGER, allowNull: false },
     amountSatoshi: { type: sequelize.INTEGER, allowNull: false },
-    invoice: { type: sequelize.STRING, allowNull: false },
-    settledAt: { type: sequelize.DATE },
+    payreq: { type: sequelize.STRING(1000), allowNull: false },
+    paid: { type: sequelize.BOOLEAN, defaultValue: false },
     createdAt: { type: sequelize.DATE },
     updatedAt: { type: sequelize.DATE },
 }
@@ -108,11 +108,11 @@ export interface VideoMetadataAttrs {
 }
 
 export interface PayInAttrs {
-    id?: number,
+    chargeId?: string,
     videoId?: number,
     amountSatoshi?: number,
-    invoice?: string,
-    settledAt?: Date,
+    payreq?: string,
+    paid?: boolean,
     createdAt?: Date,
     updatedAt?: Date,
 }

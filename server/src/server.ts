@@ -3,6 +3,7 @@ require('dotenv').config({ path: path.resolve(process.cwd(), '.env') })
 
 import * as sequelize from 'sequelize';
 import * as express from 'express';
+import * as expressWs from 'express-ws';
 import * as bodyParser from 'body-parser';
 import * as cors from 'cors';
 import * as logger from 'morgan';
@@ -10,7 +11,7 @@ import * as cookieParser from 'cookie-parser';
 import * as fileUpload from 'express-fileupload';
 
 import { instantiateModels } from './model';
-import { mainRouter } from './router/main';
+import { setupMainRouter } from './router/main';
 import { ServerResponse } from './router/iServing';
 import { ServerRequest } from './router/iRequest';
 
@@ -36,6 +37,9 @@ sequelizeInstance.sync({
 })
 .then(() => {
     const app = express();
+    
+    const mainRouter = setupMainRouter();
+
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: true }));
     app.use(cors());
@@ -65,7 +69,7 @@ sequelizeInstance.sync({
         res.json(err);
       });
       
-    app.listen(PORT, () => {
+      app.listen(PORT, () => {
         console.log(`Server is now listening on ${PORT}`)
     });
 })
