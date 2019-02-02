@@ -17,16 +17,24 @@ interface Invoice {
   rhash: string
 }
 
-function getUserDetails(username: string) : Promise<UserDetails> {
+export function userExistsOrNoUser(username: string): Promise<boolean> {
+  if (username === "") return Promise.resolve(true);
+  return getTippinUserDetails(username)
+  .then(user => (user.userid !== null));
+}
+
+function getTippinUserDetails(username: string) : Promise<UserDetails> {
   const useridRegExp: RegExp = /(?<=var_userid\s*=\s*)\d*/g;
   const isTacoRegExp: RegExp = /(?<=var_isTaco\s*=\s*)\d*/g;
   return fetch(userLookupUrl + username)
   .then(response => response.text())
   .then(text => {
+    const userid = text.match(useridRegExp) ? text.match(useridRegExp)[1] : null;
+    const isTaco = text.match(isTacoRegExp) ? text.match(isTacoRegExp)[1] : null;
     return {
       username: username,
-      userid: text.match(useridRegExp)[1],
-      isTaco: text.match(isTacoRegExp)[1]
+      userid: userid,
+      isTaco: isTaco
     } as UserDetails;
   });
 }
@@ -56,7 +64,21 @@ function isInvoiceSettled(invoice: Invoice): Promise<boolean> {
   .then(result => result.settled);
 }
 
-getUserDetails("uneeb123")
+/*
 .then(userDetails => createInvoice(userDetails))
 .then(invoice => isInvoiceSettled(invoice))
 .then(status => console.log(status));
+
+
+if (this.state.user === "") return;
+    return fetch(userLookupUrl + this.state.user, {
+      mode: "no-cors"
+    })
+    .then(response => response.text())
+    .then(text => {
+      const userid = text.match(useridRegExp) ? text.match(useridRegExp)[1] : null;
+      if (userid === null) {
+        alert("Tippin.me profile (" + this.state.user  + ") does not exist");
+      }
+    });
+*/

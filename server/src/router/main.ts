@@ -7,6 +7,7 @@ import { findAllReadyVideos, toServingVideos, findVideo, toServingVideo, toServi
 
 import { CommentAttrs } from "../model";
 import { generateInvoiceUSD, findCharge, isChargePaid, setChargePaid } from "./payments";
+import { userExistsOrNoUser } from "../pay-outs";
 
 const SUPPORTED_EXTENSIONS = ["mp4", "mpg", "m4v", "m2ts", "mov"];
 
@@ -61,6 +62,19 @@ export const setupMainRouter: () => express.Router = function() {
         .then(servableComment => res.json(servableComment))
         .catch(err => res.status(500).send(err))
     });
+
+    router.get('/upload/check/:username', function(req: ServerRequest, res: ServerResponse) {
+        const username = req.params.username;
+        userExistsOrNoUser(username)
+        .then(exists => {
+            if (exists) {
+                res.json({username: username})
+            } else {
+                res.json({error: "Tippin.me profile (" + username  + ") does not exist"})
+            }
+        })
+        .catch(e => res.sendStatus(500));
+    });
     
     router.post('/upload', function(req: UploadRequest, res: ServerResponse) {
         const videoFile: UploadedFile = req.files.file as UploadedFile;
@@ -68,7 +82,8 @@ export const setupMainRouter: () => express.Router = function() {
         if (SUPPORTED_EXTENSIONS.indexOf(videoFileExtension) === -1) {
             res.status(500).send({error: "Unsupported extension"});
         }
-        storeVideoFileLocally(videoFile, req.body, req.models)
+        userExistsOrNoUser(req.body.user) // requires client side validation as well
+        .then(() => storeVideoFileLocally(videoFile, req.body, req.models))
         .then(videoId => res.status(200).json(videoId))
         .catch(e => res.status(500).send({error: "Unable to save file on server"}));
     });

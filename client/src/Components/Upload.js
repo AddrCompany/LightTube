@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { uploadVideo } from '../actions/uploadActions'
+import { uploadVideo, checkTippinUser } from '../actions/uploadActions'
 import PropTypes from 'prop-types';
 import CircularProgressbar from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
@@ -55,14 +55,16 @@ class Upload extends Component {
       file: this.uploadInput.files[0]
     });
   }
+  
+  checkTippinUser = () => {
+    if (this.state.user !== "") {
+      this.props.checkTippinUser(this.state.user);
+    }
+  }
 
   validateFields = () => {
     if (this.state.title === "") {
       alert("'Title' is a required field");
-      return false;
-    }
-    if (this.state.user === "") {
-      alert("'Submitted by' is a required field");
       return false;
     }
     if (this.state.file === null) {
@@ -84,6 +86,9 @@ class Upload extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    if (nextProps.error) {
+      alert(nextProps.error)
+    }
     if (nextProps.progress === 100) {
       alert("Successfully uploaded. Your video will shortly appear on the website");
       this.props.onClose(); // close modal
@@ -91,6 +96,7 @@ class Upload extends Component {
   }
 
   render() {
+    const tippinMeHelperText = "This is where you will receive PayOuts for the money that you earn on the videos. Usually the same as your Twitter username.";
     let percentage = this.props.progress || 0;
     let loader = (
       <div style={{ width: "100px", margin: "0 auto" }}>
@@ -114,12 +120,6 @@ class Upload extends Component {
             </div>
           </div>
           <div className="form-group row">
-            <label className="col-sm-3 col-form-label text-right" htmlFor="inputUser">User</label>
-            <div className="col-sm-8">
-              <input type="text" value={this.state.user} className="form-control" id="inputUser" aria-describedby="userHelp" placeholder="Enter user" onChange={this.onChangeUser} />
-            </div>
-          </div>
-          <div className="form-group row">
             <label className="col-sm-3 col-form-label text-right" htmlFor="inputUpload">Video file</label>
             <div className="col-sm-8">
               <div  className="custom-file">
@@ -134,6 +134,25 @@ class Upload extends Component {
             <label className="col-sm-3 col-form-label text-right" htmlFor="inputUnlockCode">Unlock code</label>
             <div className="col-sm-8">
               <input value={this.state.unlockCode} type="text" className="form-control" id="inputUnlockCode" aria-describedby="codeHelp" placeholder="Enter code to unlock video" onChange={this.onChangeUnlockCode} />
+            </div>
+          </div>
+          <div className="form-group row">
+            <label className="col-sm-3 col-form-label text-right" htmlFor="inputUser">
+              <a rel="noopener noreferrer" href="https://tippin.me/" target="_blank">Tippin.me</a> user
+            </label>
+              <div className="input-group col-sm-8">
+                <div className="input-group-prepend">
+              <div className="input-group-text">@</div>
+              </div>
+              <input type="text"
+                value={this.state.user}
+                className="form-control"
+                id="inputUser"
+                aria-describedby="userHelp"
+                placeholder="Enter tippin.me user (optional)"
+                onChange={this.onChangeUser}
+                onBlur={this.checkTippinUser} />
+              <small id="uploadHelp" className="form-text text-muted text-left">{tippinMeHelperText}</small>
             </div>
           </div>
           <div className="row">
@@ -151,10 +170,12 @@ class Upload extends Component {
 
 Upload.propTypes = {
   uploadVideo: PropTypes.func.isRequired,
+  checkTippinUser: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
-  progress: state.upload.progress
+  progress: state.upload.progress,
+  error: state.upload.error
 })
 
-export default connect(mapStateToProps, { uploadVideo })(Upload);
+export default connect(mapStateToProps, { uploadVideo, checkTippinUser })(Upload);

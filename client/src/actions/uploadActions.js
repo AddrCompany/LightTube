@@ -1,4 +1,4 @@
-import { POST_UPLOAD } from './types';
+import { POST_UPLOAD, INVALID_USER } from './types';
 import axios from 'axios';
 
 export const uploadVideo = (file, title, description, user, unlockCode) => dispatch => {
@@ -22,4 +22,18 @@ export const uploadVideo = (file, title, description, user, unlockCode) => dispa
       payload: 100 // probably better to make an obj that has this set as a boolean
     })
   });
+}
+
+export const checkTippinUser = (username) => dispatch => {
+  const endpoint = "http://localhost:8001/upload/check/" + username;
+  fetch(endpoint)
+  .then(res => res.json())
+  .then(json => {
+    if (json.error) {
+      dispatch({
+        type: INVALID_USER,
+        payload: json.error
+      })
+    }
+  })
 }

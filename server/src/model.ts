@@ -3,12 +3,11 @@ import * as sequelize from 'sequelize';
 const videoDataTypes = {
     id: { type: sequelize.INTEGER, primaryKey: true, autoIncrement: true },
     title: { type: sequelize.STRING, allowNull: false },
-    user: { type: sequelize.STRING, defaultValue: "Anonymous", allowNull: false },
+    user: { type: sequelize.STRING, defaultValue: "", allowNull: false }, // tippin.me User
     description: { type: sequelize.TEXT, defaultValue: "No description", allowNull: false },
     likes: { type: sequelize.INTEGER, defaultValue: 0, allowNull: false },
     dislikes: { type: sequelize.INTEGER, defaultValue: 0, allowNull: false },
     views: { type: sequelize.INTEGER, defaultValue: 0, allowNull: false },
-    tippinUser: { type: sequelize.STRING },
     priceUSD: { type: sequelize.FLOAT },
     unlockCode: { type: sequelize.STRING }, // validation missing here
     createdAt: sequelize.DATE,
@@ -73,7 +72,6 @@ export interface VideoAttrs {
     payIns?: PayInAttrs[],
     payOuts?: PayOutAttrs[],
     videoMetadata?: VideoMetadataAttrs,
-    tippinUser?: string,
     priceUSD?: number,
     unlockCode?: any,
     createdAt?: Date,
