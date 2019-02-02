@@ -23,7 +23,7 @@ export function userExistsOrNoUser(username: string): Promise<boolean> {
   .then(user => (user.userid !== null));
 }
 
-function getTippinUserDetails(username: string) : Promise<UserDetails> {
+export function getTippinUserDetails(username: string) : Promise<UserDetails> {
   const useridRegExp: RegExp = /(?<=var_userid\s*=\s*)\d*/g;
   const isTacoRegExp: RegExp = /(?<=var_isTaco\s*=\s*)\d*/g;
   return fetch(userLookupUrl + username)
@@ -39,7 +39,7 @@ function getTippinUserDetails(username: string) : Promise<UserDetails> {
   });
 }
 
-function createInvoice(userDetails: UserDetails): Promise<Invoice> {
+export function createInvoice(userDetails: UserDetails): Promise<Invoice> {
   const params = new URLSearchParams();
   params.append('username', userDetails.username);
   params.append('userid', userDetails.userid);

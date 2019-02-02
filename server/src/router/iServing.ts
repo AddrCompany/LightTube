@@ -14,12 +14,11 @@ export interface ServingVideo {
   description: string,
   user: string,
   views: number,
-  payment_request: string,
   price_usd: number,
   thumbnail_url: string,
   comments: ServingComment[],
   created_at: Date,
-  video_url: string // temporary
+  amount: number,
 }
 
 export interface ServingVideoThumbnail {
@@ -29,7 +28,8 @@ export interface ServingVideoThumbnail {
   views: number,
   thumbnail_url: string,
   gif_url: string,
-  created_at: Date
+  created_at: Date,
+  amount: number,
 }
 
 export interface ServingVideos {

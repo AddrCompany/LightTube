@@ -18,7 +18,7 @@ function convertToDisplayableVideos(videos) {
 			thumbnail: video.thumbnail_url,
 			gif_url: video.gif_url,
 			created_at: video.created_at,
-			value: 0 // replace me,
+			value: video.amount,
 		};
 	})
 }
@@ -48,8 +48,7 @@ function convertToDisplayableVideo(video) {
     dislikes: video.dislikes,
     views: video.views,
 		thumbnail: video.thumbnail_url,
-		value: 0, // replace me
-    video_url: video.video_url, // temporary
+		value: video.amount,
     comments: video.comments
 	};
 }

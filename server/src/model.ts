@@ -3,12 +3,12 @@ import * as sequelize from 'sequelize';
 const videoDataTypes = {
     id: { type: sequelize.INTEGER, primaryKey: true, autoIncrement: true },
     title: { type: sequelize.STRING, allowNull: false },
-    user: { type: sequelize.STRING, defaultValue: "", allowNull: false }, // tippin.me User
+    user: { type: sequelize.STRING, defaultValue: "Anonymous", allowNull: false }, // tippin.me User
     description: { type: sequelize.TEXT, defaultValue: "No description", allowNull: false },
     likes: { type: sequelize.INTEGER, defaultValue: 0, allowNull: false },
     dislikes: { type: sequelize.INTEGER, defaultValue: 0, allowNull: false },
     views: { type: sequelize.INTEGER, defaultValue: 0, allowNull: false },
-    priceUSD: { type: sequelize.FLOAT },
+    priceUSD: { type: sequelize.FLOAT, defaultValue: 0.01 },
     unlockCode: { type: sequelize.STRING }, // validation missing here
     createdAt: sequelize.DATE,
     updatedAt: sequelize.DATE,

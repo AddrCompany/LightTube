@@ -3,11 +3,11 @@ import { UploadedFile } from "express-fileupload";
 
 import { ServerResponse } from './iServing';
 import { ServerRequest, CommentPostRequest, UploadRequest, UnlockCodeRequest } from "./iRequest";
-import { findAllReadyVideos, toServingVideos, findVideo, toServingVideo, toServingComment, persistNewVideo, storeVideoFileLocally, verifyCorrectUnlockCode, persistInvoice } from "./helpers";
+import { findAllReadyVideos, toServingVideos, findVideo, toServingVideo, toServingComment, storeVideoFileLocally, verifyCorrectUnlockCode, persistInvoice, exchangeRateBTC } from "./helpers";
 
 import { CommentAttrs } from "../model";
 import { generateInvoiceUSD, findCharge, isChargePaid, setChargePaid } from "./payments";
-import { userExistsOrNoUser } from "../pay-outs";
+import { userExistsOrNoUser } from "../tippin-me";
 
 const SUPPORTED_EXTENSIONS = ["mp4", "mpg", "m4v", "m2ts", "mov"];
 
@@ -19,19 +19,27 @@ export const setupMainRouter: () => express.Router = function() {
     });
     
     router.get('/videos', function(req: ServerRequest, res: ServerResponse) {
-        findAllReadyVideos(req.models)
-        .then(videos => videos.map(video => video.get()))
-        .then(videosAttrs => toServingVideos(videosAttrs))
-        .then(servableVideos => res.json(servableVideos))
-        .catch(err => res.status(500).send(err))
+        exchangeRateBTC()
+        .then(BTCToUSD => {
+            findAllReadyVideos(req.models)
+            .then(videos => videos.map(video => video.get()))
+            .then(videosAttrs => toServingVideos(videosAttrs, BTCToUSD))
+            .then(servableVideos => res.json(servableVideos))
+            .catch(err => res.status(500).send(err))
+        })
+        .catch(e => res.sendStatus(500));
     });
     
     router.get('/video/:id', function(req: ServerRequest, res: ServerResponse) {
         const videoId = parseInt(req.params.id);
+        exchangeRateBTC()
+        .then(BTCToUSD => {
         findVideo(videoId, req.models)
-        .then(video => toServingVideo(video.get()))
-        .then(servableVideo => res.json(servableVideo))
-        .catch(err => res.status(500).send(err))
+            .then(video => toServingVideo(video.get(), BTCToUSD))
+            .then(servableVideo => res.json(servableVideo))
+            .catch(err => res.status(500).send(err))
+        })
+        .catch(e => res.sendStatus(500));
     });
     
     router.post('/video/:id/verify', function(req: UnlockCodeRequest, res: ServerResponse) {

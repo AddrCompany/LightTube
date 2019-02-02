@@ -7,6 +7,7 @@ import { ServingVideos, ServingVideoThumbnail, ServingVideo, ServingComment } fr
 import { VideoAttrs, Video, VideoMetadataAttrs, CommentAttrs, Models, PayInAttrs, PayIn } from "../model";
 import { UploadRequestBody } from "./iRequest";
 import { OpenNodeInvoice } from "./payments";
+import fetch from "node-fetch";
 
 export function storeVideoFileLocally(videoFile: UploadedFile, uploadRequest: UploadRequestBody, models: Models): Promise<number> {
   return new Promise((resolve, reject) => {
@@ -22,7 +23,7 @@ export function storeVideoFileLocally(videoFile: UploadedFile, uploadRequest: Up
         const videoParams: VideoAttrs = {
           title: uploadRequest.title,
           description: uploadRequest.description,
-          user: uploadRequest.user,
+          user: (uploadRequest.user === "") ? "Anonymous" : uploadRequest.user,
           unlockCode: uploadRequest.unlock_code
         };
         persistNewVideo(videoParams, models, fullVideoFileName)
@@ -61,6 +62,14 @@ export function findAllReadyVideos(models: Models): Promise<Video[]> {
           {
               model: models.comments,
               as: "comments"
+          },
+          {
+            model: models.payIns,
+            where: {
+              paid: true
+            },
+            as: "payIns",
+            required: false
           }
       ]
   });
@@ -68,26 +77,43 @@ export function findAllReadyVideos(models: Models): Promise<Video[]> {
 
 export function findVideo(primaryKey: number, models: Models): Promise<Video> {
   return models.videos.findByPk(primaryKey, {
-      include: [
-          {
-              model: models.videosMetadata,
-              as: "videoMetadata"
-          },
-          {
-              model: models.comments,
-              as: "comments"
-          }
-      ]
+    include: [
+      {
+        model: models.videosMetadata,
+        as: "videoMetadata"
+      },
+      {
+        model: models.comments,
+        as: "comments"
+      },
+      {
+        model: models.payIns,
+        where: {
+          paid: true
+        },
+        as: "payIns",
+        required: false,
+      }
+    ]
   });
 }
 
-export function toServingVideos(allVideos: VideoAttrs[]): ServingVideos {
+export function toServingVideos(allVideos: VideoAttrs[], BTCToUSD: number): ServingVideos {
   return {
-      videos: allVideos.map(video => toServingVideoThumbnail(video))
+      videos: allVideos.map(video => toServingVideoThumbnail(video, BTCToUSD))
   };
 }
 
-export function toServingVideoThumbnail(video: VideoAttrs): ServingVideoThumbnail {
+export function exchangeRateBTC(): Promise<number> {
+  return Promise.resolve(fetch("https://blockchain.info/ticker")
+  .then(res => res.json())
+  .then(json => json.USD.last));
+}
+
+export function toServingVideoThumbnail(video: VideoAttrs, BTCToUSD: number): ServingVideoThumbnail {
+  const totalAmountSatoshi = video.payIns.reduce((acc, current) => (acc + current.amountSatoshi), 0);
+  const valueBTC = totalAmountSatoshi/100000000;
+  const valueUSD = valueBTC * BTCToUSD;
   return {
       video_id: video.id,
       title: video.title,
@@ -95,23 +121,26 @@ export function toServingVideoThumbnail(video: VideoAttrs): ServingVideoThumbnai
       views: video.views,
       thumbnail_url: video.videoMetadata.thumbnailUrl,
       gif_url: video.videoMetadata.gifUrl,
-      created_at: video.createdAt
+      created_at: video.createdAt,
+      amount: valueUSD,
   }
 }
 
-export function toServingVideo(video: VideoAttrs): ServingVideo {
+export function toServingVideo(video: VideoAttrs, BTCToUSD: number): ServingVideo {
+  const totalAmountSatoshi = video.payIns.reduce((acc, current) => (acc + current.amountSatoshi), 0);
+  const valueBTC = totalAmountSatoshi/100000000;
+  const valueUSD = valueBTC * BTCToUSD;
   return {
       video_id: video.id,
       title: video.title,
       description: video.description,
       user: video.user,
       views: video.views,
-      payment_request: "", // coming from opennode
       price_usd: video.priceUSD,
       thumbnail_url: video.videoMetadata.thumbnailUrl,
+      amount: valueUSD,
       comments: video.comments.map(comment => toServingComment(comment)),
       created_at: video.createdAt,
-      video_url: video.videoMetadata.hlsUrl // temporary
   }
 }
 
