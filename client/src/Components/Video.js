@@ -17,6 +17,7 @@ class Video extends Component {
   };
 
   showPaywallModal = (event) => {
+    // fire off event
     this.setState({
       openPaywallModal: true
     });
@@ -27,9 +28,8 @@ class Video extends Component {
   }
 
   onClosePaywallModal = () => {
-    this.setState({
-      openPaywallModal: false
-    });
+    // close connection
+    this.setState({ openPaywallModal: false });
   }
 
   componentDidMount() {
@@ -44,7 +44,7 @@ class Video extends Component {
       this.setState({ loading: false });
     }
     if (nextProps.video_url) {
-      this.setState({ openPaywallModal: false });
+      this.onClosePaywallModal();
     }
   }
 
@@ -82,7 +82,7 @@ class Video extends Component {
           open={this.state.openPaywallModal}
           onClose={this.onClosePaywallModal}
           center closeOnEsc closeOnOverlayClick>
-          <Paywall onClose={this.onCloseUploadModal} unlockVideo={this.unlockVideo} />
+          <Paywall onClose={this.onCloseUploadModal} unlockVideo={this.unlockVideo} video_id={this.props.video.video_id} />
         </Modal>
         {this.props.paid ? (<VideoPlayer url={this.props.video_url} />) : (this.renderBlocker()) }
         <div className="Video-info">

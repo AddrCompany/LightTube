@@ -1,4 +1,12 @@
-import { FETCH_VIDEOS, FETCH_VIDEO, VERIFY_CODE_SUCCESSFUL, VERIFY_CODE_FAIL } from '../actions/types';
+import {
+  FETCH_VIDEOS,
+  FETCH_VIDEO,
+  VERIFY_CODE_SUCCESSFUL,
+  VERIFY_CODE_FAIL,
+  PAYMENT_NOT_RECEIVED,
+  PAYMENT_SUCCESSFUL,
+  GENERATE_INVOICE
+} from '../actions/types';
 
 const initialState = {
   items: [],
@@ -18,6 +26,19 @@ export default function(state = initialState, action) {
         paid: false,
         item: action.payload,
       }
+    case GENERATE_INVOICE:
+      return {
+        ...state,
+        payreq: action.payload
+      }
+    case PAYMENT_SUCCESSFUL:
+      return {
+        ...state,
+        url: action.payload,
+        paid: true
+      }
+    case PAYMENT_NOT_RECEIVED:
+      return state
     case VERIFY_CODE_SUCCESSFUL:
       return {
         ...state,

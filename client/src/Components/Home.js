@@ -31,6 +31,8 @@ class Home extends Component {
       const thumbnail = currentVideo.thumbnail;
       const uploader = currentVideo.uploader;
       const views = currentVideo.views;
+      const gif_url = currentVideo.gif_url;
+      const created_at = currentVideo.created_at;
       const value = currentVideo.value.toFixed(2);
       itemInRow.push(
         <div className="col-3" key={i}>
@@ -40,6 +42,8 @@ class Home extends Component {
             thumbnail={thumbnail}
             uploader={uploader}
             views={views}
+            gif_url={gif_url}
+            created_at={created_at}
             value={value} />
         </div>
       );

@@ -6,5 +6,5 @@ import uploadReducer from './uploadReducer';
 export default combineReducers({
   videos: videosReducer,
   comment: commentReducer,
-  upload: uploadReducer
+  upload: uploadReducer,
 });

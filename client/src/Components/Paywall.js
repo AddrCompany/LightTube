@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 import QRCode from 'react-qr-code';
+import { connect } from 'react-redux';
+import { generateInvoice, checkStatus  } from '../actions/paywallActions'
+import PropTypes from 'prop-types';
 
 import './Paywall.css';
 
-export default class Paywall extends Component {
+class Paywall extends Component {
   state = {
     code: ""
   };
@@ -48,14 +51,26 @@ export default class Paywall extends Component {
     );
   }
 
+  componentWillMount() {
+    this.props.generateInvoice(this.props.video_id);
+  }
+
+  componentDidMount() {
+    this.timer = setInterval(() => this.props.checkStatus(this.props.payreq), 1000);
+  }
+  
+  componentWillUnmount() {
+    clearInterval(this.timer);
+  }
+
   render() {
-    const test = "lnbc1500n1pwyar2ppp5zd9aqdesw4xzfyp2td432k5dz80j2yhn4fk5cv66e4x23d00h5qsdpa2fjkzep6yp2xsefqw4k8gunp943k7mnnw3e82cm5d9mx2grpwpc8ymmpvd5q6cqzysxqr23st09sxyshzgppv5mlj788agkgz3ykva32ljlx3pqsxx96n0qgju88a500k4ukszrnzee2mecqctncv6vsp7na0apd648m93mr64vjsacphzr2yk";
+    const payreq = this.props.payreq;
     return (
       <div className="Paywall-full text-center">
         <h3>Pay to continue</h3>
         <div className="Paywall-lightning">
           <div className="Paywall-qr">
-            <QRCode value={test} />
+            <QRCode value={payreq} />
           </div>
           <div className="Paywall-lightningLogo">powered by OpenNode<span role="img" aria-label="bolt">⚡</span></div>
         </div>
@@ -65,3 +80,15 @@ export default class Paywall extends Component {
     );
   }
 }
+
+Paywall.propTypes = {
+  generateInvoice: PropTypes.func.isRequired,
+  checkStatus: PropTypes.func.isRequired,
+  video_id: PropTypes.number.isRequired
+};
+
+const mapStateToProps = state => ({
+  payreq: state.videos.payreq,
+})
+
+export default connect(mapStateToProps, { generateInvoice, checkStatus })(Paywall);
