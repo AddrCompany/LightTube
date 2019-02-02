@@ -59,9 +59,11 @@ export function isChargePaid(chargeId: string): Promise<boolean> {
   headers.append('Authorization', openNodeApiKey);
   headers.append('Content-Type', 'application/json');
 
-  return Promise.resolve(fetch(endpoint)
+  return Promise.resolve(fetch(endpoint, {
+    headers: headers,
+  })
   .then(res => res.json())
-  .then(json => json.data.status === 'paid'));
+  .then(json => (json.data.status === 'paid')));
 }
 
 export function setChargePaid(chargeId: string, models: Models): Promise<PayIn> {

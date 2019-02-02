@@ -78,11 +78,12 @@ export const setupMainRouter: () => express.Router = function() {
         const amount = 0.01 // fixed for now
         generateInvoiceUSD(amount)
         .then(invoice => persistInvoice(videoId, invoice, req.models))
-        .then(payIn => res.send({ payreq: payIn.get().payreq }));
+        .then(payIn => res.send({ payreq: payIn.get().payreq }))
+        .catch(e => res.sendStatus(500));
     })
 
-    router.get('/paid/:payreq', function(req: ServerRequest, res: ServerResponse) {
-        const payreq = req.params.payreq;
+    router.post('/paid', function(req: ServerRequest, res: ServerResponse) {
+        const payreq = req.body.payreq;
         findCharge(payreq, req.models)
         .then(payIn => {
             isChargePaid(payIn.get().chargeId)
@@ -94,11 +95,14 @@ export const setupMainRouter: () => express.Router = function() {
                     .then(() => findVideo(videoId, req.models))
                     .then(video => video.increment("views"))
                     .then(updatedVideo => res.json({url: updatedVideo.get().videoMetadata.hlsUrl}))
+                    .catch(e => res.sendStatus(500))
                 } else {
                     res.status(402).send({ error: "Not paid yet" });
                 }
-            })            
-        });
+            })
+            .catch(e => res.sendStatus(500))       
+        })
+        .catch(e => res.sendStatus(500));
         // TODO invoice expired
         // res.status(408).send({error: "Invoice expired"})
     });

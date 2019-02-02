@@ -55,8 +55,10 @@ class Paywall extends Component {
     this.props.generateInvoice(this.props.video_id);
   }
 
-  componentDidMount() {
-    this.timer = setInterval(() => this.props.checkStatus(this.props.payreq), 1000);
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.payreq) {
+      this.timer = setInterval(() => this.props.checkStatus(this.props.payreq), 1000);
+    }
   }
   
   componentWillUnmount() {
@@ -70,7 +72,7 @@ class Paywall extends Component {
         <h3>Pay to continue</h3>
         <div className="Paywall-lightning">
           <div className="Paywall-qr">
-            <QRCode value={payreq} />
+            {!!payreq ? (<QRCode value={payreq} />) : null }
           </div>
           <div className="Paywall-lightningLogo">powered by OpenNode<span role="img" aria-label="bolt">⚡</span></div>
         </div>
