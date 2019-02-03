@@ -5,13 +5,13 @@ const newInvoiceUrl: string = 'https://tippin.me/lndreq/newinvoice.php';
 const lookupInvoiceUrl: string = 'https://tippin.me/lndreq/lookupinvoice.php';
 const userLookupUrl: string = "https://tippin.me/buttons/send-lite.php?u="
 
-interface UserDetails {
+export interface UserDetails {
   username: string,
   userid: string,
   isTaco: "0" | "1"
 }
 
-interface Invoice {
+export interface Invoice {
   error: boolean,
   message: string,
   rhash: string
@@ -52,8 +52,7 @@ export function createInvoice(userDetails: UserDetails): Promise<Invoice> {
   .then(result => (result as Invoice));
 }
 
-function isInvoiceSettled(invoice: Invoice): Promise<boolean> {
-  console.log(invoice);
+export function isInvoiceSettled(invoice: Invoice): Promise<boolean> {
   const params = new URLSearchParams();
   params.append('rhash', invoice.rhash)
   return fetch(lookupInvoiceUrl, {

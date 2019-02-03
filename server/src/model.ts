@@ -53,8 +53,8 @@ const payOutDataTypes = {
     id: { type: sequelize.INTEGER, primaryKey: true, autoIncrement: true },
     videoId: { type: sequelize.INTEGER, allowNull: false },
     amountSatoshi: { type: sequelize.INTEGER, allowNull: false },
-    invoice: { type: sequelize.STRING, allowNull: false },
-    settledAt: { type: sequelize.DATE },
+    payreq: { type: sequelize.STRING(1000), allowNull: false },
+    paid: { type: sequelize.BOOLEAN, defaultValue: false },
     createdAt: { type: sequelize.DATE },
     updatedAt: { type: sequelize.DATE },
 }
@@ -113,16 +113,18 @@ export interface PayInAttrs {
     paid?: boolean,
     createdAt?: Date,
     updatedAt?: Date,
+    total?: number; // in satoshis; used for aggregates
 }
 
 export interface PayOutAttrs {
     id?: number,
     videoId?: number,
     amountSatoshi?: number,
-    invoice?: string,
-    settledAt?: Date,
+    payreq?: string,
+    paid?: boolean,
     createdAt?: Date,
     updatedAt?: Date,
+    total?: number; // in satoshis; used for aggregates
 }
 
 export interface Video extends sequelize.Instance<VideoAttrs> {}

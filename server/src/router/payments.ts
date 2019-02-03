@@ -5,7 +5,8 @@ import * as Promise from 'bluebird';
 import fetch, { Headers } from 'node-fetch'
 import { Models, PayIn } from '../model';
 
-const openNodeApiKey = process.env.OPENNODE_INVOICE_API_KEY;
+const openNodeInvoiceApiKey = process.env.OPENNODE_INVOICE_API_KEY;
+const openNodeWithdrawApiKey = process.env.OPENNODE_WITHDRAW_API_KEY;
 const openNodeEndpoint = "https://api.opennode.co";
 
 interface OpenNodeLightningInvoice {
@@ -42,7 +43,7 @@ export function generateInvoiceUSD(amount: number): Promise<OpenNodeInvoice> {
     currency: 'USD'
   };
   let headers = new Headers();
-  headers.append('Authorization', openNodeApiKey);
+  headers.append('Authorization', openNodeInvoiceApiKey);
   headers.append('Content-Type', 'application/json');
 
   return Promise.resolve(fetch(endpoint, {
@@ -56,7 +57,7 @@ export function generateInvoiceUSD(amount: number): Promise<OpenNodeInvoice> {
 export function isChargePaid(chargeId: string): Promise<boolean> {
   const endpoint = openNodeEndpoint + "/v1/charge/" + chargeId;
   let headers = new Headers();
-  headers.append('Authorization', openNodeApiKey);
+  headers.append('Authorization', openNodeInvoiceApiKey);
   headers.append('Content-Type', 'application/json');
 
   return Promise.resolve(fetch(endpoint, {
@@ -68,7 +69,7 @@ export function isChargePaid(chargeId: string): Promise<boolean> {
 
 export function setChargePaid(chargeId: string, models: Models): Promise<PayIn> {
   return models.payIns.findById(chargeId)
-  .then(payIn => payIn.set("paid", true));
+  .then(payIn => payIn.set("paid", true).save());
 }
 
 export function findCharge(payreq: string, models: Models) {
@@ -77,4 +78,22 @@ export function findCharge(payreq: string, models: Models) {
       payreq: payreq
     }
   });
+}
+
+export function withdrawFunds(amount: number, invoice: string) {
+  const endpoint = openNodeEndpoint + "/v1/withdrawals";
+  const body = {
+    type: "ln",
+    amount: amount,
+    address: invoice
+  };
+  let headers = new Headers();
+  headers.append('Authorization', openNodeWithdrawApiKey);
+  headers.append('Content-Type', 'application/json');
+  return Promise.resolve(fetch(endpoint, {
+    method: 'post',
+    body: JSON.stringify(body),
+    headers: headers,
+  })
+  .then(res => res.json()));
 }

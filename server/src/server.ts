@@ -3,7 +3,6 @@ require('dotenv').config({ path: path.resolve(process.cwd(), '.env') })
 
 import * as sequelize from 'sequelize';
 import * as express from 'express';
-import * as expressWs from 'express-ws';
 import * as bodyParser from 'body-parser';
 import * as cors from 'cors';
 import * as logger from 'morgan';
