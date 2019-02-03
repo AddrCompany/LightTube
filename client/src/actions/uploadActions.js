@@ -1,8 +1,9 @@
 import { POST_UPLOAD, INVALID_USER } from './types';
 import axios from 'axios';
+import { SERVER_ENDPOINT } from './constants';
 
 export const uploadVideo = (file, title, description, user, unlockCode) => dispatch => {
-  const endpoint = "http://localhost:8001/upload";
+  const endpoint = SERVER_ENDPOINT + "/upload";
   const data = new FormData();
   data.append('file', file);
   data.append('title', title);
@@ -25,7 +26,7 @@ export const uploadVideo = (file, title, description, user, unlockCode) => dispa
 }
 
 export const checkTippinUser = (username) => dispatch => {
-  const endpoint = "http://localhost:8001/upload/check/" + username;
+  const endpoint = SERVER_ENDPOINT + "/upload/check/" + username;
   fetch(endpoint)
   .then(res => res.json())
   .then(json => {

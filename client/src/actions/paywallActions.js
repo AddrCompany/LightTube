@@ -1,7 +1,8 @@
 import { GENERATE_INVOICE, PAYMENT_SUCCESSFUL, PAYMENT_NOT_RECEIVED } from './types';
+import { SERVER_ENDPOINT } from './constants';
 
 export const generateInvoice = (video_id) => dispatch => {
-  const endpoint = "http://localhost:8001/video/" + video_id + "/geninvoice";
+  const endpoint = SERVER_ENDPOINT + "/video/" + video_id + "/geninvoice";
   fetch(endpoint)
   .then(res => res.json())
   .then(json => dispatch({
@@ -11,7 +12,7 @@ export const generateInvoice = (video_id) => dispatch => {
 }
 
 export const checkStatus = (payreq) => dispatch => {
-  const endpoint = "http://localhost:8001/paid/";
+  const endpoint = SERVER_ENDPOINT + "/paid/";
   const body = {
     payreq: payreq
   }

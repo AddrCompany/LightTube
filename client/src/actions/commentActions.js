@@ -1,8 +1,9 @@
 import axios from 'axios';
 import { POST_COMMENT } from './types';
+import { SERVER_ENDPOINT } from './constants';
 
 export const postComment = (video_id, comment, user) => dispatch => {
-  const endpoint = "http://localhost:8001/video/" + video_id + "/comment";
+  const endpoint = SERVER_ENDPOINT + "/video/" + video_id + "/comment";
   const data = new FormData();
   data.append('comment', comment);
   data.append('user', user);

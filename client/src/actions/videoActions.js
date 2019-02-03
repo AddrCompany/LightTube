@@ -1,8 +1,9 @@
 import axios from 'axios';
 import { FETCH_VIDEOS, FETCH_VIDEO, VERIFY_CODE_FAIL, VERIFY_CODE_SUCCESSFUL } from './types';
+import { SERVER_ENDPOINT } from './constants';
 
 function loadAllVideos() {
-	const endpoint = "http://localhost:8001/videos";
+	const endpoint = SERVER_ENDPOINT + "/videos";
 	return fetch(endpoint)
 		.then(response => response.json())
 		.then(json => json.videos);
@@ -33,7 +34,7 @@ export const fetchVideos = () => dispatch => {
 }
 
 function loadVideo(id) {
-	const endpoint = "http://localhost:8001/video/" + id;
+	const endpoint = SERVER_ENDPOINT + "/video/" + id;
 	return fetch(endpoint)
 		.then(response => response.json())
 }
@@ -63,7 +64,7 @@ export const fetchVideo = (id) => dispatch => {
 }
 
 export const enterCode = (id, code) => dispatch => {
-	const endpoint = "http://localhost:8001/video/" + id + "/verify";
+	const endpoint = SERVER_ENDPOINT + "/video/" + id + "/verify";
   const data = new FormData();
   data.append('code', code);
   axios.post(endpoint, data)
