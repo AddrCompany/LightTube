@@ -14,7 +14,7 @@ import { setupMainRouter } from './router/main';
 import { ServerResponse } from './router/iServing';
 import { ServerRequest } from './router/iRequest';
 
-const PORT = process.env.PORT || 8001;
+const PORT = process.env.SERVER_PORT || 8001;
 
 class ServerError extends Error {
     status: number;
@@ -23,7 +23,7 @@ class ServerError extends Error {
 const sequelizeInstance = new sequelize(
     process.env.DATABASE_NAME,process.env.DATABASE_USER, process.env.DATABASE_PASSWORD,
     {
-        host: 'localhost',
+        host: process.env.DATABASE_HOST,
         dialect: 'postgres',
     }
 );

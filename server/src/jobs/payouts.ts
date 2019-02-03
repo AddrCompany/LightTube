@@ -12,7 +12,7 @@ const JOB_FREQUENCY = 1000 * 30; // every 30 seconds
 const sequelizeInstance = new sequelize(
   process.env.DATABASE_NAME,process.env.DATABASE_USER, process.env.DATABASE_PASSWORD,
   {
-    host: 'localhost',
+    host: process.env.DATABASE_HOST,
     dialect: 'postgres',
   }
 );
