@@ -14,6 +14,7 @@ const sequelizeInstance = new sequelize(
   {
     host: process.env.DATABASE_HOST,
     dialect: 'postgres',
+    logging: false
   }
 );
 
@@ -40,7 +41,7 @@ function getAllFileNames(): Promise<string[]> {
         const extension = file.split('.').pop();
         return (SUPPORTED_EXTENSIONS.indexOf(extension) !== -1)
       });
-      console.log("Files found: ", videoFileNames);
+      if (videoFileNames.length >= 0) console.log("Files found: ", videoFileNames);
       resolve(videoFileNames);
     });
   });

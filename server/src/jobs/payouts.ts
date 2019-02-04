@@ -14,6 +14,7 @@ const sequelizeInstance = new sequelize(
   {
     host: process.env.DATABASE_HOST,
     dialect: 'postgres',
+    logging: false
   }
 );
 
