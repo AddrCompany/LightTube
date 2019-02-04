@@ -86,10 +86,6 @@ export const setupMainRouter: () => express.Router = function() {
     
     router.post('/upload', function(req: UploadRequest, res: ServerResponse) {
         const videoFile: UploadedFile = req.files.file as UploadedFile;
-        const videoFileExtension = videoFile.name.split('.').pop();
-        if (SUPPORTED_EXTENSIONS.indexOf(videoFileExtension) === -1) {
-            res.status(500).send({error: "Unsupported extension"});
-        }
         userExistsOrNoUser(req.body.user) // requires client side validation as well
         .then(() => storeVideoFileLocally(videoFile, req.body, req.models))
         .then(videoId => res.status(200).json(videoId))

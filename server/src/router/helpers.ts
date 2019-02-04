@@ -12,7 +12,7 @@ import fetch from "node-fetch";
 export function storeVideoFileLocally(videoFile: UploadedFile, uploadRequest: UploadRequestBody, models: Models): Promise<number> {
   return new Promise((resolve, reject) => {
     const videoFileName: string = uuidv4();
-    const videoFileExtension = videoFile.name.split('.').pop();
+    const videoFileExtension = videoFile.name.split('.').pop().toLowerCase();
     const fullVideoFileName: string = videoFileName + '.' + videoFileExtension;
     videoFile.mv(
       `${process.cwd()}/uploads/${fullVideoFileName}`,
