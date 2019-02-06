@@ -12,6 +12,8 @@ import store from './store';
 
 import './App.css';
 
+const LinkToGoogleForm = "https://goo.gl/forms/R6Z33UQ3SjzWXfCI2";
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -19,9 +21,16 @@ class App extends Component {
       openUploadModal: false
     };
   }
+  
+  openInNewTab() {
+    var win = window.open(LinkToGoogleForm, '_blank');
+    win.focus();
+  }
 
   openUpload = () => {
-    this.setState({openUploadModal: true})
+    // this.setState({openUploadModal: true});
+    this.openInNewTab();
+    
   }
 
   onCloseUploadModal = () => {
