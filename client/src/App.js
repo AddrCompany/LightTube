@@ -28,8 +28,8 @@ class App extends Component {
   }
 
   openUpload = () => {
-    // this.setState({openUploadModal: true});
-    this.openInNewTab();
+    this.setState({openUploadModal: true});
+    // this.openInNewTab();
     
   }
 
