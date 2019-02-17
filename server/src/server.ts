@@ -1,3 +1,6 @@
+/**
+ * Load environment variables
+ */
 import * as path from 'path';
 require('dotenv').config({ path: path.resolve(process.cwd(), '.env') })
 
